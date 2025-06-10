@@ -1,6 +1,6 @@
 # AEM SDK Setup CLI
 
-This CLI helps you set up a local AEM SDK environment. It mirrors the behavior of the original shell script using Node.js and [oclif](https://oclif.io/).
+This project provides a small command line interface built with [oclif](https://oclif.io/) to automate setting up a local AEM SDK. It is **not** a migration tool but simply a helper utility for extracting the SDK archives and preparing your development environment.
 
 ## Installation
 
@@ -10,13 +10,22 @@ npm install -g ./
 
 ## Usage
 
-Run the setup command in a directory containing the AEM SDK ZIP files:
+Place the AEM SDK ZIP files in a directory and run the command:
 
 ```bash
 aem-sdk-setup
 ```
 
-The tool will prompt whether to install additional components such as AEM Forms, secrets, and Dispatcher tools.
+You will be asked which optional components (AEM Forms, secrets and Dispatcher tools) you would like to install.
+
+### Commands
+
+The CLI exposes a single root command. The following options are available:
+
+```bash
+aem-sdk-setup --help       # display usage information
+aem-sdk-setup --version    # display version number
+```
 
 ## Contribution
 
