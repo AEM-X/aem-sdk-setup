@@ -1,5 +1,7 @@
 # AEM SDK Setup CLI
 
+![CI](https://github.com/org/aem-sdk-setup/actions/workflows/node.yml/badge.svg)
+
 This project provides a small command line interface built with [oclif](https://oclif.io/) to automate setting up a local AEM SDK. It is **not** a migration tool but simply a helper utility for extracting the SDK archives and preparing your development environment.
 
 ## Installation
@@ -37,6 +39,8 @@ When the CLI runs it prompts for optional installations:
 aem-sdk-setup
 ```
 
+Run `aem-sdk-setup --help` at any time to see available options.
+
 The command walks you through an interactive setup where you choose whether to
 install AEM Forms, secrets or the Dispatcher tools. After extraction two
 folders `instance/author` and `instance/publish` are created containing the
@@ -56,7 +60,7 @@ The CLI exposes a single root command. The following options are available:
 
 ```bash
 aem-sdk-setup --help                   # display usage information
-aem-sdk-setup --version                # display version number
+aem-sdk-setup --version, -v            # display version number
 aem-sdk-setup -d /path/to/zips         # use files from a different directory
 ```
 
@@ -65,6 +69,29 @@ aem-sdk-setup -d /path/to/zips         # use files from a different directory
 1. Fork the repository and create your branch.
 2. Install dependencies with `npm install`.
 3. Run `npm test` and `npm run lint` before submitting a pull request.
+
+## Publishing
+
+The CLI reads its version from `package.json`. To release a new version:
+
+1. Bump the version with `npm version <patch|minor|major>`.
+2. Ensure the `author` field in `package.json` is populated.
+3. Publish the package to npm using `npm publish --access public`.
+
+After publishing, the new version will be shown when running `aem-sdk-setup --version`.
+
+## Tech Stack
+
+- Node.js and [oclif](https://oclif.io/) for the CLI framework
+- `fs-extra` and `glob` for filesystem operations
+- Jest for unit testing
+- GitHub Actions for continuous integration
+
+## Code Coverage
+
+The `node.yml` workflow runs `npm test -- --coverage` on every commit. The
+generated `coverage/` directory is uploaded as a workflow artifact so the
+results can be downloaded from the GitHub Actions page.
 
 ## Supported Environments
 

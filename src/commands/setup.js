@@ -3,7 +3,7 @@ const path = require('path');
 const glob = require('glob');
 const readline = require('node:readline/promises');
 const { stdin: input, stdout: output } = require('node:process');
-const { Command, Flags } = require('@oclif/core');
+const { Command, Flags, ux } = require('@oclif/core');
 const { extractZip } = require('../lib/extraction');
 const { installForms } = require('../lib/forms');
 const { installSecrets } = require('../lib/secrets');
@@ -17,6 +17,10 @@ const { copyStartScripts } = require('../lib/scripts');
 module.exports = class Setup extends Command {
   static description = 'Set up AEM SDK environment';
   static flags = {
+    version: Flags.boolean({
+      char: 'v',
+      description: 'Show CLI version',
+    }),
     directory: Flags.string({
       char: 'd',
       description: 'Directory containing the AEM SDK files',
@@ -26,6 +30,10 @@ module.exports = class Setup extends Command {
 
   async run() {
     const { flags } = await this.parse(Setup);
+    if (flags.version) {
+      this.log(this.config.userAgent);
+      return;
+    }
     const targetDir = path.resolve(flags.directory);
     if (!(await fs.pathExists(targetDir))) {
       this.error(`Directory not found: ${targetDir}`);
@@ -46,12 +54,13 @@ module.exports = class Setup extends Command {
         );
       }
 
-      this.log(`Extracting AEM SDK file: ${sdkZip}`);
+      ux.action.start(`Extracting AEM SDK file ${sdkZip}`);
       const extractedDir = path.join(
         process.cwd(),
         path.basename(sdkZip, '.zip'),
       );
       await extractZip(sdkZip, extractedDir);
+      ux.action.stop();
 
       await fs.ensureDir('instance/author/crx-quickstart/install');
       await fs.ensureDir('instance/publish/crx-quickstart/install');
@@ -106,7 +115,6 @@ module.exports = class Setup extends Command {
         ).trim();
       }
       rl.close();
-
       if (installFormsChoice === 'yes') {
         const formsZip = glob.sync(`${FORMS_PREFIX}*.zip`)[0];
         if (!formsZip) {
@@ -114,20 +122,29 @@ module.exports = class Setup extends Command {
             `Error: AEM Forms addons ZIP file (${FORMS_PREFIX}*.zip) not found in the current directory.`,
           );
         }
-        this.log(`Extracting AEM Forms addons ZIP file: ${formsZip}`);
+        ux.action.start(`Extracting AEM Forms addons ZIP file ${formsZip}`);
         await installForms(formsZip);
+        ux.action.stop();
       }
 
       if (installSecretsChoice === 'yes') {
+        ux.action.start('Installing secrets');
         await installSecrets();
+        ux.action.stop();
       }
 
       if (installDispatcherChoice === 'yes') {
+        ux.action.start('Installing AEM Dispatcher');
         await installDispatcher(extractedDir, DISPATCHER_PREFIX);
+        ux.action.stop();
       }
 
+      ux.action.start('Copying helper scripts');
       await copyStartScripts();
+      ux.action.stop();
       this.log('AEM setup completed successfully.');
+    } catch (error) {
+      this.error(error instanceof Error ? error.message : String(error));
     } finally {
       process.chdir(originalDir);
     }
