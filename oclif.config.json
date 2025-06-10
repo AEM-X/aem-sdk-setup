@@ -1,0 +1,8 @@
+{
+  "name": "aem-sdk-setup",
+  "version": "1.0.0",
+  "bin": "aem-sdk-setup",
+  "oclif": {
+    "commands": { "strategy": "single", "target": "commands/setup.js" }
+  }
+}

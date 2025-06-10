@@ -1,3 +1,5 @@
 #!/usr/bin/env node
-const { run } = require('@oclif/core');
-run().catch(require('@oclif/core/handle')); 
+// Execute the CLI entry point. The src/index.js file configures oclif and
+// handles all command execution. Requiring it here ensures the CLI works when
+// installed globally via the `bin` field in package.json.
+require('../src');
