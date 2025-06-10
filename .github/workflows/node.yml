@@ -32,7 +32,7 @@ jobs:
         shell: bash
       - run: npm run lint
         shell: bash
-      - run: npm test -- --coverage --coverageReporters=text
+      - run: npm test -- --coverage --coverageReporters=text --coverageReporters=lcov
         shell: bash
       - name: Upload coverage reports to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.node == '20.x'

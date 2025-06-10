@@ -103,13 +103,13 @@ After publishing, the new version will be shown when running `aem-sdk-setup --ve
 
 ## Code Coverage
 
-The `node.yml` workflow runs `npm test -- --coverage --coverageReporters=text` on every commit. The coverage
+The `node.yml` workflow runs `npm test -- --coverage --coverageReporters=text --coverageReporters=lcov` on every commit. The coverage
 results are printed in the console and uploaded to Codecov.
 
 To check coverage locally run:
 
 ```bash
-npm test -- --coverage --coverageReporters=text
+npm test -- --coverage --coverageReporters=text --coverageReporters=lcov
 ```
 
 The current test suite reports around **97%** statement coverage.
