@@ -6,9 +6,20 @@ const readline = require('node:readline/promises');
 const { stdin: input, stdout: output } = require('node:process');
 const { Command } = require('@oclif/core');
 
+/**
+ * Root command for setting up an AEM SDK environment.
+ *
+ * This command extracts the SDK archives and optional add-ons found in the
+ * current directory, configures secrets and dispatcher tools, and copies
+ * helper start scripts. All actions are controlled via interactive prompts.
+ */
 module.exports = class Setup extends Command {
   static description = 'Set up AEM SDK environment';
 
+  /**
+   * Execute the setup process. Prompts the user for desired components and
+   * performs extraction and configuration steps.
+   */
   async run() {
     const SDK_PREFIX = 'aem-sdk-';
     const FORMS_PREFIX = 'aem-forms-addon-';

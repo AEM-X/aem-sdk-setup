@@ -1,7 +1,7 @@
 {
   "name": "aem-sdk-setup",
   "version": "1.0.0",
-  "description": "A Maven plugin to set up AEM SDK in local Environment.",
+  "description": "CLI utility to set up local AEM SDK environments using oclif.",
   "main": "index.js",
   "scripts": {
     "test": "jest",
