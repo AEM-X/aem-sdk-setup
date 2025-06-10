@@ -11,9 +11,31 @@
     "prepare": "node bin/run --help",
     "prepack": "npm run format"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "aem",
+    "cli",
+    "sdk"
+  ],
+  "author": "AEM X",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/org/aem-sdk-setup.git"
+  },
+  "bugs": {
+    "url": "https://github.com/org/aem-sdk-setup/issues"
+  },
+  "homepage": "https://github.com/org/aem-sdk-setup#readme",
+  "files": [
+    "bin",
+    "src",
+    "oclif.config.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "commonjs",
   "eslintIgnore": [
     "coverage"

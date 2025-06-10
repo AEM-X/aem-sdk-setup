@@ -24,3 +24,7 @@ jobs:
         shell: bash
       - run: npm test -- --coverage
         shell: bash
+      - uses: actions/upload-artifact@v3
+        with:
+          name: coverage-${{ matrix.os }}
+          path: coverage
