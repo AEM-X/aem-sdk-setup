@@ -21,13 +21,21 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
+    "@types/node": "^18.19.111",
     "eslint": "^9.28.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.1",
     "jest": "^30.0.0",
-    "prettier": "^3.5.3"
+    "prettier": "^3.5.3",
+    "ts-node": "^10.9.2"
   },
   "bin": {
-    "aem-sdk-setup": "bin/run"
+    "aem-sdk-setup": "./bin/run.js"
+  },
+  "oclif": {
+    "bin": "aem-sdk-setup",
+    "commands": "./dist/commands",
+    "dirname": "aem-sdk-setup",
+    "topicSeparator": " "
   }
 }
