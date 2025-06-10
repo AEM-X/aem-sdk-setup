@@ -1,6 +1,9 @@
 # AEM SDK Setup CLI
 
-![CI](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/node.yml/badge.svg)
+[![CI](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/node.yml/badge.svg)](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/node.yml)
+[![Coverage Status](https://codecov.io/gh/AEM-X/aem-sdk-setup/branch/main/graph/badge.svg)](https://codecov.io/gh/AEM-X/aem-sdk-setup)
+[![CodeQL](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/codeql.yml/badge.svg)](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/codeql.yml)
+[![License Scan](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/license.yml/badge.svg)](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/license.yml)
 
 This project provides a small command line interface built with [oclif](https://oclif.io/) to automate setting up a local AEM SDK. It is **not** a migration tool but simply a helper utility for extracting the SDK archives and preparing your development environment.
 
@@ -87,7 +90,7 @@ After publishing, the new version will be shown when running `aem-sdk-setup --ve
 - `fs-extra`, `glob` and `unzipper` for filesystem and archive operations
 - Jest for unit testing with coverage
 - ESLint and Prettier for code style
-- GitHub Actions for continuous integration with linting, formatting checks and tests
+- GitHub Actions for continuous integration with linting, formatting checks, tests and CodeQL analysis
 
 ## Package Information
 
@@ -109,6 +112,17 @@ npm test -- --coverage --coverageReporters=text
 ```
 
 The current test suite reports around **97%** statement coverage.
+
+## Code Quality
+
+In addition to coverage reports, the repository runs a scheduled CodeQL scan via
+GitHub Actions to detect common vulnerabilities and ensure code quality.
+
+## License Scan
+
+A dedicated workflow uses `license-checker` to review dependency licenses on
+every push and pull request. The generated report is uploaded as a workflow
+artifact for further inspection.
 
 ## Supported Environments
 
