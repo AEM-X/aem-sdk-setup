@@ -1,4 +1,4 @@
-name: License Scan
+name: Security Audit
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  scan:
+  audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -22,10 +22,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-20-
       - run: npm ci
-      - name: Generate license report
-        run: npx license-checker --summary --production > license-summary.txt
-      - name: Upload license report
-        uses: actions/upload-artifact@v4
-        with:
-          name: license-summary
-          path: license-summary.txt
+      - run: npm audit --audit-level=high
