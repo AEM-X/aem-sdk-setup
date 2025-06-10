@@ -20,12 +20,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/org/aem-sdk-setup.git"
+    "url": "https://github.com/AEM-X/aem-sdk-setup.git"
   },
   "bugs": {
-    "url": "https://github.com/org/aem-sdk-setup/issues"
+    "url": "https://github.com/AEM-X/aem-sdk-setup/issues"
   },
-  "homepage": "https://github.com/org/aem-sdk-setup#readme",
+  "homepage": "https://github.com/AEM-X/aem-sdk-setup#readme",
   "files": [
     "bin",
     "src",
