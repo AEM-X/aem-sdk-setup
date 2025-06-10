@@ -4,10 +4,11 @@
   "description": "CLI utility to set up local AEM SDK environments using oclif.",
   "main": "index.js",
   "scripts": {
-    "pretest": "npm run format",
+    "pretest": "npm run format:check",
     "test": "jest",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings 0",
     "format": "prettier -w \"**/*.{js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,json,md}\"",
     "prepare": "node bin/run --help",
     "prepack": "npm run format"
   },

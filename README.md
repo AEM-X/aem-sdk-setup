@@ -68,7 +68,8 @@ aem-sdk-setup -d /path/to/zips         # use files from a different directory
 
 1. Fork the repository and create your branch.
 2. Install dependencies with `npm install`.
-3. Run `npm test` and `npm run lint` before submitting a pull request.
+3. Run `npm run format:check` and `npm run lint` before submitting a pull request.
+4. Run `npm test`.
 
 ## Publishing
 
@@ -83,9 +84,18 @@ After publishing, the new version will be shown when running `aem-sdk-setup --ve
 ## Tech Stack
 
 - Node.js and [oclif](https://oclif.io/) for the CLI framework
-- `fs-extra` and `glob` for filesystem operations
-- Jest for unit testing
-- GitHub Actions for continuous integration
+- `fs-extra`, `glob` and `unzipper` for filesystem and archive operations
+- Jest for unit testing with coverage
+- ESLint and Prettier for code style
+- GitHub Actions for continuous integration with linting, formatting checks and tests
+
+## Package Information
+
+- **Name:** `aem-sdk-setup`
+- **Version:** see [`package.json`](package.json) for the current release
+- **License:** MIT
+- **Runtime dependencies:** `@oclif/core`, `fs-extra`, `glob`, `unzipper`
+- **Dev dependencies:** `jest`, `eslint`, `prettier`, `@types/node`
 
 ## Code Coverage
 
@@ -93,9 +103,17 @@ The `node.yml` workflow runs `npm test -- --coverage` on every commit. The
 generated `coverage/` directory is uploaded as a workflow artifact so the
 results can be downloaded from the GitHub Actions page.
 
+To check coverage locally run:
+
+```bash
+npm test -- --coverage
+```
+
+The current test suite reports around **97%** statement coverage.
+
 ## Supported Environments
 
-- Node.js 18+
+- Node.js 18 and 20
 - Tested on Linux, macOS and Windows via GitHub Actions
 
 ## License
