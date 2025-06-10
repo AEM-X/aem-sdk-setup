@@ -16,6 +16,7 @@ describe('setup command', () => {
 
   test('fails when SDK zip is missing', async () => {
     glob.sync.mockReturnValueOnce([]);
+    fs.pathExists.mockResolvedValue(true);
     await expect(Setup.run([], ROOT_OPTS)).rejects.toThrow('AEM SDK file');
   });
 
@@ -29,7 +30,7 @@ describe('setup command', () => {
     });
     fs.ensureDir.mockResolvedValue();
     fs.copy.mockResolvedValue();
-    fs.pathExists.mockResolvedValue(false);
+    fs.pathExists.mockResolvedValueOnce(true).mockResolvedValue(false);
     const readline = require('node:readline/promises');
     jest.spyOn(readline, 'createInterface').mockReturnValue({
       question: jest

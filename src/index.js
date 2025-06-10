@@ -1,15 +1,10 @@
+const path = require('path');
 const { run, flush, handle } = require('@oclif/core');
+const pjson = require('../oclif.config.json');
 
 run(undefined, {
-  root: __dirname,
-  pjson: {
-    name: 'aem-sdk-setup',
-    version: '1.0.0',
-    bin: 'aem-sdk-setup',
-    oclif: {
-      commands: { strategy: 'single', target: 'src/commands/setup.js' },
-    },
-  },
+  root: path.join(__dirname, '..'),
+  pjson,
 })
   .then(flush)
   .catch(handle);
