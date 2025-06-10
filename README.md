@@ -1,6 +1,6 @@
 # AEM SDK Setup CLI
 
-![CI](https://github.com/org/aem-sdk-setup/actions/workflows/node.yml/badge.svg)
+![CI](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/node.yml/badge.svg)
 
 This project provides a small command line interface built with [oclif](https://oclif.io/) to automate setting up a local AEM SDK. It is **not** a migration tool but simply a helper utility for extracting the SDK archives and preparing your development environment.
 
