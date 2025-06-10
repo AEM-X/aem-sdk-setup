@@ -1,0 +1,33 @@
+{
+  "name": "aem-sdk-setup",
+  "version": "1.0.0",
+  "description": "A Maven plugin to set up AEM SDK in local Environment.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint .",
+    "format": "prettier -w \"**/*.{js,json,md}\"",
+    "prepare": "node bin/run --help"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@oclif/core": "^4.3.3",
+    "fs-extra": "^11.3.0",
+    "glob": "^11.0.2",
+    "unzipper": "^0.12.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.1",
+    "jest": "^30.0.0",
+    "prettier": "^3.5.3"
+  },
+  "bin": {
+    "aem-sdk-setup": "bin/run"
+  }
+}
