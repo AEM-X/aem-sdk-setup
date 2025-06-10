@@ -1,17 +1,18 @@
 const fs = require('fs-extra');
 const path = require('path');
 const glob = require('glob');
-const unzipper = require('unzipper');
 const readline = require('node:readline/promises');
 const { stdin: input, stdout: output } = require('node:process');
 const { Command, Flags } = require('@oclif/core');
+const { extractZip } = require('../lib/extraction');
+const { installForms } = require('../lib/forms');
+const { installSecrets } = require('../lib/secrets');
+const { installDispatcher } = require('../lib/dispatcher');
+const { copyStartScripts } = require('../lib/scripts');
 
 /**
  * Root command for setting up an AEM SDK environment.
- *
- * This command extracts the SDK archives and optional add-ons found in the
- * current directory, configures secrets and dispatcher tools, and copies
- * helper start scripts. All actions are controlled via interactive prompts.
+ * It extracts the SDK archives, installs optional components and copies helper scripts.
  */
 module.exports = class Setup extends Command {
   static description = 'Set up AEM SDK environment';
@@ -23,10 +24,6 @@ module.exports = class Setup extends Command {
     }),
   };
 
-  /**
-   * Execute the setup process. Prompts the user for desired components and
-   * performs extraction and configuration steps.
-   */
   async run() {
     const { flags } = await this.parse(Setup);
     const targetDir = path.resolve(flags.directory);
@@ -54,10 +51,7 @@ module.exports = class Setup extends Command {
         process.cwd(),
         path.basename(sdkZip, '.zip'),
       );
-      await fs
-        .createReadStream(sdkZip)
-        .pipe(unzipper.Extract({ path: extractedDir }))
-        .promise();
+      await extractZip(sdkZip, extractedDir);
 
       await fs.ensureDir('instance/author/crx-quickstart/install');
       await fs.ensureDir('instance/publish/crx-quickstart/install');
@@ -79,9 +73,6 @@ module.exports = class Setup extends Command {
       );
 
       if (await fs.pathExists('install')) {
-        this.log(
-          "Copying ZIP files from 'install' to 'instance/author/crx-quickstart/install'...",
-        );
         for (const file of glob.sync('*.zip', { cwd: 'install' })) {
           await fs.copy(
             path.join('install', file),
@@ -92,33 +83,31 @@ module.exports = class Setup extends Command {
             path.join('instance/publish/crx-quickstart/install', file),
           );
         }
-      } else {
-        this.warn("Warning: 'install' folder not found. No ZIP files copied.");
       }
 
       const rl = readline.createInterface({ input, output });
       const fullInstall = (
         await rl.question('Do you want a full installation? (yes/no): ')
       ).trim();
-      let installForms, installSecrets, installDispatcher;
+      let installFormsChoice, installSecretsChoice, installDispatcherChoice;
       if (fullInstall === 'yes') {
-        installForms = 'yes';
-        installSecrets = 'yes';
-        installDispatcher = 'yes';
+        installFormsChoice = 'yes';
+        installSecretsChoice = 'yes';
+        installDispatcherChoice = 'yes';
       } else {
-        installForms = (
+        installFormsChoice = (
           await rl.question('Do you want to install AEM Forms? (yes/no): ')
         ).trim();
-        installSecrets = (
+        installSecretsChoice = (
           await rl.question('Do you want to install secrets? (yes/no): ')
         ).trim();
-        installDispatcher = (
+        installDispatcherChoice = (
           await rl.question('Do you want to install AEM Dispatcher? (yes/no): ')
         ).trim();
       }
       rl.close();
 
-      if (installForms === 'yes') {
+      if (installFormsChoice === 'yes') {
         const formsZip = glob.sync(`${FORMS_PREFIX}*.zip`)[0];
         if (!formsZip) {
           this.error(
@@ -126,125 +115,18 @@ module.exports = class Setup extends Command {
           );
         }
         this.log(`Extracting AEM Forms addons ZIP file: ${formsZip}`);
-        const formsDir = path.join(
-          process.cwd(),
-          path.basename(formsZip, '.zip'),
-        );
-        await fs
-          .createReadStream(formsZip)
-          .pipe(unzipper.Extract({ path: formsDir }))
-          .promise();
-        const formsFar = glob.sync('*.far', {
-          cwd: formsDir,
-          absolute: true,
-        })[0];
-        if (!formsFar) {
-          this.error(
-            'Error: AEM Forms Archive (.far) file not found within extracted directory.',
-          );
-        }
-        await fs.copy(
-          formsFar,
-          path.join(
-            'instance/author/crx-quickstart/install',
-            path.basename(formsFar),
-          ),
-        );
-        await fs.copy(
-          formsFar,
-          path.join(
-            'instance/publish/crx-quickstart/install',
-            path.basename(formsFar),
-          ),
-        );
-      } else {
-        this.log('Skipping AEM Forms installation.');
+        await installForms(formsZip);
       }
 
-      if (installSecrets === 'yes') {
-        this.log('Installing secrets...');
-        await fs.ensureDir('instance/author/crx-quickstart/conf');
-        await fs.writeFile(
-          'instance/author/crx-quickstart/conf/sling.properties',
-          'org.apache.felix.configadmin.plugin.interpolation.secretsdir=${sling.home}/secretsdir',
-        );
-        await fs.ensureDir('instance/publish/crx-quickstart/conf');
-        await fs.writeFile(
-          'instance/publish/crx-quickstart/conf/sling.properties',
-          'org.apache.felix.configadmin.plugin.interpolation.secretsdir=${sling.home}/secretsdir',
-        );
-        if (await fs.pathExists('secretsdir')) {
-          await fs.copy(
-            'secretsdir',
-            'instance/author/crx-quickstart/secretsdir',
-          );
-          await fs.copy(
-            'secretsdir',
-            'instance/publish/crx-quickstart/secretsdir',
-          );
-        } else {
-          this.warn(
-            "Warning: 'secretsdir' folder not found. Secrets not installed.",
-          );
-        }
-      } else {
-        this.log('Skipping secrets installation.');
+      if (installSecretsChoice === 'yes') {
+        await installSecrets();
       }
 
-      if (installDispatcher === 'yes') {
-        const installer = glob.sync(`${DISPATCHER_PREFIX}*.sh`, {
-          cwd: extractedDir,
-        })[0];
-        if (!installer) {
-          this.error(
-            `Error: AEM Dispatcher installer script (${DISPATCHER_PREFIX}*.sh) not found in the extracted AEM SDK directory.`,
-          );
-        }
-        await fs.chmod(path.join(extractedDir, installer), 0o755);
-        this.log(`Running AEM Dispatcher installer: ./${installer}`);
-        await new Promise((resolve, reject) => {
-          const child = require('child_process').spawn(`./${installer}`, {
-            cwd: extractedDir,
-            stdio: 'inherit',
-            shell: true,
-          });
-          child.on('close', (code) =>
-            code === 0
-              ? resolve()
-              : reject(
-                  new Error(`dispatcher installer exited with code ${code}`),
-                ),
-          );
-        });
-        const dispatcherDir = glob.sync('dispatcher-sdk-*', {
-          cwd: extractedDir,
-          absolute: true,
-        })[0];
-        if (!dispatcherDir) {
-          this.error(
-            'Error: AEM Dispatcher configuration directory (dispatcher-sdk-*) not found.',
-          );
-        }
-        await fs.move(dispatcherDir, 'dispatcher', { overwrite: true });
-        this.log(
-          `AEM Dispatcher configuration directory '${path.basename(dispatcherDir)}' renamed and moved to 'dispatcher'.`,
-        );
-      } else {
-        this.log('Skipping AEM Dispatcher installation.');
+      if (installDispatcherChoice === 'yes') {
+        await installDispatcher(extractedDir, DISPATCHER_PREFIX);
       }
 
-      for (const scriptName of ['start_author.sh', 'start_publish.sh']) {
-        if (await fs.pathExists(scriptName)) {
-          const dest = `instance/${scriptName.includes('author') ? 'author' : 'publish'}/${scriptName}`;
-          await fs.copy(scriptName, dest);
-          this.log(`Copying '${scriptName}' to '${path.dirname(dest)}/'...`);
-        } else {
-          this.warn(
-            `Warning: '${scriptName}' not found. Cannot copy to '${scriptName.includes('author') ? 'instance/author/' : 'instance/publish/'}'.`,
-          );
-        }
-      }
-
+      await copyStartScripts();
       this.log('AEM setup completed successfully.');
     } finally {
       process.chdir(originalDir);
