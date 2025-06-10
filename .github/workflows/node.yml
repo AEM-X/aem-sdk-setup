@@ -22,5 +22,5 @@ jobs:
         shell: bash
       - run: npm run lint
         shell: bash
-      - run: npm test
+      - run: npm test -- --coverage
         shell: bash

@@ -16,18 +16,32 @@ node ./bin/run --help
 
 ## Usage
 
-Place the AEM SDK ZIP files in a directory and run the command from that
-directory. At a minimum the CLI expects an `aem-sdk-*.zip` archive. Optional
-archives such as `aem-forms-addon-*.zip` or the dispatcher tools installer can
-be placed next to it. The tool extracts everything into an `instance/` folder.
+Place the official AEM SDK ZIP files in a directory and run the command from
+that location. At a minimum the CLI expects an archive named
+`aem-sdk-<version>.zip`. The command extracts the archive into a folder next to
+the ZIP and copies the quickstart JARs into the `instance/` structure. If a
+folder named `install/` is present, all ZIP files within are copied to both
+author and publish `crx-quickstart/install` directories.
+
+When the CLI runs it prompts for optional installations:
+
+- **AEM Forms add‑on** – requires a file matching
+  `aem-forms-addon-*.zip`. The extracted `.far` archive is copied to both
+  instances.
+- **Secrets** – copies a local `secretsdir/` folder and sets the required sling
+  property files.
+- **AEM Dispatcher tools** – executes the dispatcher installer found in the SDK
+  and moves the generated `dispatcher-sdk-*` folder to `dispatcher/`.
 
 ```bash
 aem-sdk-setup
 ```
 
 The command walks you through an interactive setup where you choose whether to
-install AEM Forms, secrets or the Dispatcher tools. The archives are extracted
-into an `instance/` folder and start scripts are copied for you.
+install AEM Forms, secrets or the Dispatcher tools. After extraction two
+folders `instance/author` and `instance/publish` are created containing the
+quickstart JARs. If `start_author.sh` or `start_publish.sh` exist in the working
+directory they are copied into the respective instance folders for convenience.
 
 If the ZIP files reside elsewhere you can provide the location using the `-d`
 or `--directory` flag:

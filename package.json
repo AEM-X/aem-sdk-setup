@@ -4,15 +4,20 @@
   "description": "CLI utility to set up local AEM SDK environments using oclif.",
   "main": "index.js",
   "scripts": {
+    "pretest": "npm run format",
     "test": "jest",
     "lint": "eslint .",
     "format": "prettier -w \"**/*.{js,json,md}\"",
-    "prepare": "node bin/run --help"
+    "prepare": "node bin/run --help",
+    "prepack": "npm run format"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "eslintIgnore": [
+    "coverage"
+  ],
   "dependencies": {
     "@oclif/core": "^4.3.3",
     "fs-extra": "^11.3.0",
