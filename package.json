@@ -58,7 +58,7 @@
     "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
     "semantic-release": "^24.2.5",
-    "@semantic-release/commit-analyzer": "^11.1.0",
+    "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/release-notes-generator": "^12.1.0",
     "@semantic-release/npm": "^10.0.3",
     "@semantic-release/github": "^9.0.7"
