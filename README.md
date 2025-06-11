@@ -8,7 +8,27 @@
 
 This project provides a small command line interface built with [oclif](https://oclif.io/) to automate setting up a local AEM SDK. It is **not** a migration tool but simply a helper utility for extracting the SDK archives and preparing your development environment.
 
+<!-- toc -->
+
+- [Installation](#installation)
+- [Getting started](#getting-started)
+- [Usage](#usage)
+- [Commands](#commands)
+- [Contribution](#contribution)
+- [Publishing](#publishing)
+- [Tech Stack](#tech-stack)
+- [Package Information](#package-information)
+- [Code Coverage](#code-coverage)
+- [Code Quality](#code-quality)
+- [License Scan](#license-scan)
+- [Security Audit](#security-audit)
+- [Supported Environments](#supported-environments)
+- [License](#license)
+<!-- tocstop -->
+
 ## Installation
+
+Requires Node.js 18, 20 or 22.
 
 ```bash
 npm install -g ./
@@ -19,6 +39,12 @@ From a cloned repository you can invoke the CLI without installing it globally:
 ```bash
 node ./bin/run --help
 ```
+
+## Getting started
+
+Download the AEM as a Cloud Service SDK (also known as the _aem-local-sdk_) from
+the official product downloads page and place the ZIP files in a directory.
+Run the CLI from that location.
 
 ## Usage
 
@@ -58,7 +84,7 @@ or `--directory` flag:
 aem-sdk-setup --directory /path/to/zips
 ```
 
-### Commands
+## Commands
 
 The CLI exposes a single root command. The following options are available:
 
@@ -97,7 +123,7 @@ After publishing, the new version will be shown when running `aem-sdk-setup --ve
 
 - **Name:** `aem-sdk-setup`
 - **Version:** see [`package.json`](package.json) for the current release
-- **License:** MIT
+- **License:** Apache-2.0
 - **Runtime dependencies:** `@oclif/core`, `fs-extra`, `glob`, `unzipper`
 - **Dev dependencies:** `jest`, `eslint`, `prettier`, `@types/node`
 
@@ -132,9 +158,9 @@ known vulnerabilities in dependencies.
 
 ## Supported Environments
 
-- Node.js 18 and 20
+- Node.js 18, 20 and 22
 - Tested on Linux, macOS and Windows via GitHub Actions
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
