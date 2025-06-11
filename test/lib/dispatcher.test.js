@@ -17,13 +17,20 @@ test('runs installer and moves directory', async () => {
   child_process.spawn.mockReturnValue({
     on: (event, cb) => event === 'close' && cb(0),
   });
-  await installDispatcher('extracted', 'aem-sdk-dispatcher-tools-');
+  fs.pathExists.mockResolvedValue(true);
+  await installDispatcher(
+    'extracted',
+    'aem-sdk-dispatcher-tools-',
+    '/out',
+    '/src',
+  );
   expect(fs.chmod).toHaveBeenCalled();
   expect(fs.move).toHaveBeenCalledWith(
     '/tmp/dispatcher-sdk-test',
-    'dispatcher',
+    '/out/dispatcher',
     { overwrite: true },
   );
+  expect(fs.copy).toHaveBeenCalledWith('/src', '/out/dispatcher/src');
 });
 
 test('throws when installer missing', async () => {

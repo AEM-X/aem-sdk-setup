@@ -9,7 +9,12 @@ const { spawn } = require('child_process');
  * @param {string} prefix prefix for installer script name
  * @returns {Promise<void>}
  */
-async function installDispatcher(extractedDir, prefix) {
+async function installDispatcher(
+  extractedDir,
+  prefix,
+  outputDir = '.',
+  src = '',
+) {
   const installer = glob.sync(`${prefix}*.sh`, { cwd: extractedDir })[0];
   if (!installer) {
     throw new Error(
@@ -38,7 +43,11 @@ async function installDispatcher(extractedDir, prefix) {
       'Error: AEM Dispatcher configuration directory (dispatcher-sdk-*) not found.',
     );
   }
-  await fs.move(dispatcherDir, 'dispatcher', { overwrite: true });
+  const destDir = path.join(outputDir, 'dispatcher');
+  await fs.move(dispatcherDir, destDir, { overwrite: true });
+  if (src && (await fs.pathExists(src))) {
+    await fs.copy(src, path.join(destDir, 'src'));
+  }
 }
 
 module.exports = { installDispatcher };
