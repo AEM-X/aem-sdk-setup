@@ -28,11 +28,13 @@ This project provides a small command line interface built with [oclif](https://
 
 ## Installation
 
-Requires Node.js 18, 20 or 22.
+Requires Node.js 18 or later.
 
 ```bash
 npm install -g ./
 ```
+
+Installing globally makes the `aem-sdk-setup` command available in your `PATH`.
 
 From a cloned repository you can invoke the CLI without installing it globally:
 
@@ -78,10 +80,11 @@ quickstart JARs. If `start_author.sh` or `start_publish.sh` exist in the working
 directory they are copied into the respective instance folders for convenience.
 
 If the ZIP files reside elsewhere you can provide the location using the `-d`
-or `--directory` flag:
+or `--directory` flag. Generated files are placed in an `output/` directory by
+default which can be changed with the `-o`/`--output` flag:
 
 ```bash
-aem-sdk-setup --directory /path/to/zips
+aem-sdk-setup --directory /path/to/zips --output ./result
 ```
 
 ## Commands
@@ -90,9 +93,15 @@ The CLI exposes a single root command. The following options are available:
 
 ```bash
 aem-sdk-setup --help                   # display usage information
-aem-sdk-setup --version, -v            # display version number
+aem-sdk-setup --version, -v            # display version number only
 aem-sdk-setup -d /path/to/zips         # use files from a different directory
+aem-sdk-setup -o ./result              # write instance to a custom folder
+aem-sdk-setup autocomplete             # enable shell autocompletion
 ```
+
+Running `aem-sdk-setup` without a subcommand automatically executes the setup process.
+
+When installed globally the CLI will warn you if a newer version is available.
 
 ## Contribution
 
@@ -158,7 +167,7 @@ known vulnerabilities in dependencies.
 
 ## Supported Environments
 
-- Node.js 18, 20 and 22
+- Node.js 18 and later
 - Tested on Linux, macOS and Windows via GitHub Actions
 
 ## License

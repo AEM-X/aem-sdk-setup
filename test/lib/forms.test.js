@@ -18,7 +18,7 @@ afterEach(() => {
 
 test('installs forms when far exists', async () => {
   glob.sync.mockReturnValueOnce(['forms.far']);
-  await installForms('forms.zip');
+  await installForms('forms.zip', '/out');
   expect(extractZip).toHaveBeenCalledWith(
     'forms.zip',
     path.join(process.cwd(), 'forms'),
