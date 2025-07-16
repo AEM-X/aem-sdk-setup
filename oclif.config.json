@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "bin": "aem-sdk-setup",
   "oclif": {
-    "commands": "./src/commands",
+    "commands": {
+      "strategy": "single",
+      "target": "./src/commands/setup.js"
+    },
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-autocomplete",
