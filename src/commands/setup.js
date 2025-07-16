@@ -108,24 +108,34 @@ module.exports = class Setup extends Command {
       }
 
       const rl = readline.createInterface({ input, output });
-      const fullInstall = (
-        await rl.question('Do you want a full installation? (yes/no): ')
-      ).trim();
+      const fullInstallAnswer = (
+        await rl.question('Do you want a full installation? (y/N): ')
+      )
+        .trim()
+        .toLowerCase();
+      const fullInstall =
+        fullInstallAnswer === 'y' || fullInstallAnswer === 'yes';
       let installFormsChoice, installSecretsChoice, installDispatcherChoice;
-      if (fullInstall === 'yes') {
+      if (fullInstall) {
         installFormsChoice = 'yes';
         installSecretsChoice = 'yes';
         installDispatcherChoice = 'yes';
       } else {
         installFormsChoice = (
           await rl.question('Do you want to install AEM Forms? (yes/no): ')
-        ).trim();
+        )
+          .trim()
+          .toLowerCase();
         installSecretsChoice = (
           await rl.question('Do you want to install secrets? (yes/no): ')
-        ).trim();
+        )
+          .trim()
+          .toLowerCase();
         installDispatcherChoice = (
           await rl.question('Do you want to install AEM Dispatcher? (yes/no): ')
-        ).trim();
+        )
+          .trim()
+          .toLowerCase();
       }
       let dispatcherSrc = '';
       if (installDispatcherChoice === 'yes') {
@@ -133,35 +143,83 @@ module.exports = class Setup extends Command {
           await rl.question('Path to dispatcher src (leave blank to skip): ')
         ).trim();
       }
-      rl.close();
       if (installFormsChoice === 'yes') {
         const formsZip = glob.sync(`${FORMS_PREFIX}*.zip`)[0];
         if (!formsZip) {
-          this.error(
-            `Error: AEM Forms addons ZIP file (${FORMS_PREFIX}*.zip) not found in the current directory.`,
-          );
+          const reason = `AEM Forms addons ZIP file (${FORMS_PREFIX}*.zip) not found in the current directory.`;
+          if (fullInstall) {
+            this.warn(`Skipping AEM Forms installation: ${reason}`);
+          } else {
+            const cont = (await rl.question(`${reason} Continue? (y/N): `))
+              .trim()
+              .toLowerCase();
+            if (cont !== 'y' && cont !== 'yes') {
+              this.error(reason);
+            }
+          }
+        } else {
+          ux.action.start(`Extracting AEM Forms addons ZIP file ${formsZip}`);
+          await installForms(formsZip, outputDir);
+          ux.action.stop();
         }
-        ux.action.start(`Extracting AEM Forms addons ZIP file ${formsZip}`);
-        await installForms(formsZip, outputDir);
-        ux.action.stop();
       }
 
       if (installSecretsChoice === 'yes') {
-        ux.action.start('Installing secrets');
-        await installSecrets(outputDir);
-        ux.action.stop();
+        try {
+          ux.action.start('Installing secrets');
+          await installSecrets(outputDir);
+          ux.action.stop();
+        } catch (error) {
+          ux.action.stop();
+          const reason = error instanceof Error ? error.message : String(error);
+          if (fullInstall) {
+            this.warn(`Skipping secrets installation: ${reason}`);
+          } else {
+            const cont = (
+              await rl.question(
+                `Failed to install secrets (${reason}). Continue? (y/N): `,
+              )
+            )
+              .trim()
+              .toLowerCase();
+            if (cont !== 'y' && cont !== 'yes') {
+              this.error(reason);
+            }
+          }
+        }
       }
 
       if (installDispatcherChoice === 'yes') {
-        ux.action.start('Installing AEM Dispatcher');
-        await installDispatcher(
-          extractedDir,
-          DISPATCHER_PREFIX,
-          outputDir,
-          dispatcherSrc,
-        );
-        ux.action.stop();
+        try {
+          ux.action.start('Installing AEM Dispatcher');
+          await installDispatcher(
+            extractedDir,
+            DISPATCHER_PREFIX,
+            outputDir,
+            dispatcherSrc,
+          );
+          ux.action.stop();
+        } catch (error) {
+          ux.action.stop();
+          const reason = error instanceof Error ? error.message : String(error);
+          if (fullInstall) {
+            this.warn(`Skipping AEM Dispatcher installation: ${reason}`);
+          } else {
+            const cont = (
+              await rl.question(
+                `Error installing AEM Dispatcher (${reason}). Continue? (y/N): `,
+              )
+            )
+              .trim()
+              .toLowerCase();
+            if (cont !== 'y' && cont !== 'yes') {
+              this.error(reason);
+            }
+          }
+        }
       }
+
+      rl.close();
 
       ux.action.start('Copying helper scripts');
       await copyStartScripts(outputDir);

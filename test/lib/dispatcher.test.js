@@ -1,5 +1,6 @@
 const fs = require('fs-extra');
 const glob = require('glob');
+const path = require('path');
 const child_process = require('child_process');
 
 jest.mock('fs-extra');
@@ -27,10 +28,13 @@ test('runs installer and moves directory', async () => {
   expect(fs.chmod).toHaveBeenCalled();
   expect(fs.move).toHaveBeenCalledWith(
     '/tmp/dispatcher-sdk-test',
-    '/out/dispatcher',
+    path.join('/out', 'dispatcher'),
     { overwrite: true },
   );
-  expect(fs.copy).toHaveBeenCalledWith('/src', '/out/dispatcher/src');
+  expect(fs.copy).toHaveBeenCalledWith(
+    '/src',
+    path.join('/out', 'dispatcher', 'src'),
+  );
 });
 
 test('throws when installer missing', async () => {

@@ -35,7 +35,7 @@ describe('setup command', () => {
     await expect(Setup.run([], ROOT_OPTS)).rejects.toThrow('AEM SDK file');
   });
 
-  test('fails when forms zip missing', async () => {
+  test('warns when forms zip missing during full install', async () => {
     glob.sync
       .mockReturnValueOnce(['aem-sdk.zip'])
       .mockReturnValueOnce(['quickstart.jar'])
@@ -49,8 +49,10 @@ describe('setup command', () => {
       question: jest.fn().mockResolvedValue('yes'),
       close: jest.fn(),
     });
-    await expect(Setup.run([], ROOT_OPTS)).rejects.toThrow(
-      'AEM Forms addons ZIP file',
+    const warn = jest.spyOn(Setup.prototype, 'warn');
+    await Setup.run([], ROOT_OPTS);
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('AEM Forms addons ZIP file'),
     );
   });
 
