@@ -104,11 +104,14 @@ aem-sdk-setup -d /path/to/zips         # use files from a different directory
 aem-sdk-setup -o ./result              # write instance to a custom folder
 aem-sdk-setup init                     # create the default folder structure
 aem-sdk-setup autocomplete             # enable shell autocompletion
+aem-sdk-setup commands                 # list all available commands
+aem-sdk-setup update                   # update to the latest version
 ```
 
 Running `aem-sdk-setup` without a subcommand automatically executes the setup process.
 
 When installed globally the CLI will warn you if a newer version is available.
+You can also run `aem-sdk-setup update` to upgrade to the latest release.
 
 ## Contribution
 
