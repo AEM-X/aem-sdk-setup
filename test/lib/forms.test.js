@@ -24,6 +24,7 @@ test('installs forms when far exists', async () => {
     path.join(process.cwd(), 'forms'),
   );
   expect(fs.copy).toHaveBeenCalledTimes(2);
+  expect(fs.remove).toHaveBeenCalledWith(path.join(process.cwd(), 'forms'));
 });
 
 test('throws when far missing', async () => {

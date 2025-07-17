@@ -28,6 +28,7 @@ async function installForms(formsZip, outputDir = '.') {
     formsFar,
     path.join(outputDir, PUBLISH_INSTALL, path.basename(formsFar)),
   );
+  await fs.remove(formsDir);
 }
 
 module.exports = { installForms };
