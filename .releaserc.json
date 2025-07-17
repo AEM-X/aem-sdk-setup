@@ -10,6 +10,12 @@
       }
     ],
     [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "node scripts/sync-oclif-version.js ${nextRelease.version}"
+      }
+    ],
+    [
       "@semantic-release/github",
       {
         "assets": "dist/**"
