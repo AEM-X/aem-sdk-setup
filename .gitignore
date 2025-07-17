@@ -20,3 +20,5 @@ buildNumber.properties
 node_modules/
 coverage/
 setup/
+/.idea/
+!/.idea/

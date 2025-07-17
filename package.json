@@ -1,6 +1,6 @@
 {
   "name": "aem-sdk-setup",
-  "version": "1.0.0",
+  "version": "0.0.0-semantic-release",
   "description": "CLI utility to set up local AEM SDK environments using oclif.",
   "main": "index.js",
   "scripts": {
