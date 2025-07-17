@@ -1,9 +1,5 @@
 const fs = require('fs-extra');
 const path = require('path');
-const extract = require('extract-zip');
-const { spawn } = require('child_process');
-const readline = require('node:readline');
-const { stdin: input, stdout: output } = require('node:process');
 
 const AUTHOR_CONF = 'instance/author/crx-quickstart/conf';
 const PUBLISH_CONF = 'instance/publish/crx-quickstart/conf';
@@ -24,55 +20,11 @@ async function installSecrets(outputDir = '.') {
     path.join(outputDir, PUBLISH_CONF, 'sling.properties'),
     'org.apache.felix.configadmin.plugin.interpolation.secretsdir=${sling.home}/secretsdir',
   );
-  if (await fs.pathExists('secretsdir')) {
-    await fs.copy('secretsdir', path.join(outputDir, AUTHOR_SECRETS));
-    await fs.copy('secretsdir', path.join(outputDir, PUBLISH_SECRETS));
-    return;
-  }
+  if (!(await fs.pathExists('secretsdir')))
+    throw new Error('secretsdir directory not found');
 
-  if (await fs.pathExists('secretsdir.zip')) {
-    const tmpDir = path.join(outputDir, 'secrets_tmp');
-    await fs.ensureDir(tmpDir);
-    try {
-      try {
-        await extract('secretsdir.zip', { dir: tmpDir });
-      } catch (err) {
-        const password = await hiddenPrompt('Password for secrets zip: ');
-        try {
-          await extract('secretsdir.zip', { dir: tmpDir, password });
-        } catch (err2) {
-          await unzipWithPassword('secretsdir.zip', tmpDir, password);
-        }
-      }
-      await fs.copy(tmpDir, path.join(outputDir, AUTHOR_SECRETS));
-      await fs.copy(tmpDir, path.join(outputDir, PUBLISH_SECRETS));
-    } finally {
-      await fs.remove(tmpDir);
-    }
-  }
+  await fs.copy('secretsdir', path.join(outputDir, AUTHOR_SECRETS));
+  await fs.copy('secretsdir', path.join(outputDir, PUBLISH_SECRETS));
 }
 
-async function hiddenPrompt(query) {
-  const rl = readline.createInterface({ input, output, terminal: true });
-  rl.stdoutMuted = true;
-  rl._writeToOutput = function write() {
-    if (rl.stdoutMuted) rl.output.write('*');
-  };
-  const answer = await new Promise((resolve) => rl.question(query, resolve));
-  rl.output.write('\n');
-  rl.close();
-  return answer;
-}
-
-function unzipWithPassword(zip, dest, password) {
-  return new Promise((resolve, reject) => {
-    const child = spawn('unzip', ['-P', password, zip, '-d', dest], {
-      stdio: 'ignore',
-    });
-    child.on('close', (code) => {
-      code === 0 ? resolve() : reject(new Error('unzip failed'));
-    });
-  });
-}
-
-module.exports = { installSecrets, hiddenPrompt, unzipWithPassword };
+module.exports = { installSecrets };
