@@ -2,8 +2,13 @@ const fs = require('fs-extra');
 
 jest.mock('fs-extra');
 jest.mock('extract-zip');
+jest.mock('child_process');
 
-const { installSecrets, hiddenPrompt } = require('../../src/lib/secrets');
+const {
+  installSecrets,
+  hiddenPrompt,
+  unzipWithPassword,
+} = require('../../src/lib/secrets');
 
 afterEach(() => jest.resetAllMocks());
 
@@ -40,6 +45,27 @@ test('prompts password when extraction fails', async () => {
   });
   await installSecrets('/out');
   expect(extract).toHaveBeenCalledTimes(2);
+});
+
+test('falls back to unzip command when passworded zip cannot be extracted', async () => {
+  fs.pathExists.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+  const extract = require('extract-zip');
+  extract
+    .mockRejectedValueOnce(new Error('fail'))
+    .mockRejectedValueOnce(new Error('fail'));
+  const childProc = require('child_process');
+  const mockOn = jest.fn((evt, cb) => evt === 'close' && cb(0));
+  jest.spyOn(childProc, 'spawn').mockReturnValue({ on: mockOn });
+  const readline = require('node:readline');
+  jest.spyOn(readline, 'createInterface').mockReturnValue({
+    question: (q, cb) => cb('secret'),
+    close: jest.fn(),
+    output: { write: jest.fn() },
+    stdoutMuted: true,
+    _writeToOutput: jest.fn(),
+  });
+  await installSecrets('/out');
+  expect(childProc.spawn).toHaveBeenCalled();
 });
 
 test('skips copying when no secretsdir', async () => {

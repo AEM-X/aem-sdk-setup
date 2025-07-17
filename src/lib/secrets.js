@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const extract = require('extract-zip');
+const { spawn } = require('child_process');
 const readline = require('node:readline');
 const { stdin: input, stdout: output } = require('node:process');
 
@@ -37,7 +38,11 @@ async function installSecrets(outputDir = '.') {
         await extract('secretsdir.zip', { dir: tmpDir });
       } catch (err) {
         const password = await hiddenPrompt('Password for secrets zip: ');
-        await extract('secretsdir.zip', { dir: tmpDir, password });
+        try {
+          await extract('secretsdir.zip', { dir: tmpDir, password });
+        } catch (err2) {
+          await unzipWithPassword('secretsdir.zip', tmpDir, password);
+        }
       }
       await fs.copy(tmpDir, path.join(outputDir, AUTHOR_SECRETS));
       await fs.copy(tmpDir, path.join(outputDir, PUBLISH_SECRETS));
@@ -59,4 +64,15 @@ async function hiddenPrompt(query) {
   return answer;
 }
 
-module.exports = { installSecrets, hiddenPrompt };
+function unzipWithPassword(zip, dest, password) {
+  return new Promise((resolve, reject) => {
+    const child = spawn('unzip', ['-P', password, zip, '-d', dest], {
+      stdio: 'ignore',
+    });
+    child.on('close', (code) => {
+      code === 0 ? resolve() : reject(new Error('unzip failed'));
+    });
+  });
+}
+
+module.exports = { installSecrets, hiddenPrompt, unzipWithPassword };
