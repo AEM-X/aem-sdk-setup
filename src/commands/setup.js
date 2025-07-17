@@ -20,12 +20,12 @@ module.exports = class Setup extends Command {
     directory: Flags.string({
       char: 'd',
       description: 'Directory containing the AEM SDK files',
-      default: '.',
+      default: 'setup/input',
     }),
     output: Flags.string({
       char: 'o',
       description: 'Output directory for the generated instance',
-      default: 'output',
+      default: '../output',
     }),
   };
 
@@ -113,7 +113,7 @@ module.exports = class Setup extends Command {
 
       const rl = readline.createInterface({ input, output });
       const fullInstallAnswer = (
-        await rl.question('Do you want a full installation? (y/N): ')
+        await rl.question('Do you want a full installation? (Y/N): ')
       )
         .trim()
         .toLowerCase();
@@ -154,7 +154,7 @@ module.exports = class Setup extends Command {
           if (fullInstall) {
             this.warn(`Skipping AEM Forms installation: ${reason}`);
           } else {
-            const cont = (await rl.question(`${reason} Continue? (y/N): `))
+            const cont = (await rl.question(`${reason} Continue? (Y/N): `))
               .trim()
               .toLowerCase();
             if (cont !== 'y' && cont !== 'yes') {
@@ -181,7 +181,7 @@ module.exports = class Setup extends Command {
           } else {
             const cont = (
               await rl.question(
-                `Failed to install secrets (${reason}). Continue? (y/N): `,
+                `Failed to install secrets (${reason}). Continue? (Y/N): `,
               )
             )
               .trim()
@@ -211,7 +211,7 @@ module.exports = class Setup extends Command {
           } else {
             const cont = (
               await rl.question(
-                `Error installing AEM Dispatcher (${reason}). Continue? (y/N): `,
+                `Error installing AEM Dispatcher (${reason}). Continue? (Y/N): `,
               )
             )
               .trim()

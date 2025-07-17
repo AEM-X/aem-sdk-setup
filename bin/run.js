@@ -2,6 +2,10 @@
 
 (async () => {
   const path = require('path');
+  if (process.argv.includes('-h')) {
+    const idx = process.argv.indexOf('-h');
+    process.argv.splice(idx, 1, '--help');
+  }
   if (process.argv.includes('--version') || process.argv.includes('-v')) {
     // Output only the CLI version and exit
     // eslint-disable-next-line global-require

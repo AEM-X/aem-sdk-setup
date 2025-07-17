@@ -25,8 +25,13 @@ const Setup = require('../src/commands/setup');
 const ROOT_OPTS = { root: path.join(__dirname, '..') };
 
 describe('setup command', () => {
+  const fsReal = require('fs');
+  beforeEach(() => {
+    fsReal.mkdirSync(path.resolve('setup/input'), { recursive: true });
+  });
   afterEach(() => {
     jest.resetAllMocks();
+    fsReal.rmSync(path.resolve('setup'), { recursive: true, force: true });
   });
 
   test('fails when target directory missing', async () => {
@@ -113,7 +118,9 @@ describe('setup command', () => {
     });
     const { copyStartScripts } = require('../src/lib/scripts');
     await Setup.run([], ROOT_OPTS);
-    expect(fs.remove).toHaveBeenCalledWith(path.join(process.cwd(), 'aem-sdk'));
+    expect(fs.remove).toHaveBeenCalledWith(
+      path.join(path.resolve('setup/input'), 'aem-sdk'),
+    );
     expect(copyStartScripts).toHaveBeenCalledWith(
       expect.any(String),
       'aem-author-p4502-1.jar',

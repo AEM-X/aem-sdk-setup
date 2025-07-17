@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 jest.mock('fs-extra');
 jest.mock('extract-zip');
 
-const { installSecrets } = require('../../src/lib/secrets');
+const { installSecrets, hiddenPrompt } = require('../../src/lib/secrets');
 
 afterEach(() => jest.resetAllMocks());
 
@@ -30,10 +30,13 @@ test('prompts password when extraction fails', async () => {
   fs.pathExists.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
   const extract = require('extract-zip');
   extract.mockRejectedValueOnce(new Error('fail'));
-  const readline = require('node:readline/promises');
+  const readline = require('node:readline');
   jest.spyOn(readline, 'createInterface').mockReturnValue({
-    question: jest.fn().mockResolvedValue('secret'),
+    question: (q, cb) => cb('secret'),
     close: jest.fn(),
+    output: { write: jest.fn() },
+    stdoutMuted: true,
+    _writeToOutput: jest.fn(),
   });
   await installSecrets('/out');
   expect(extract).toHaveBeenCalledTimes(2);
@@ -43,4 +46,21 @@ test('skips copying when no secretsdir', async () => {
   fs.pathExists.mockResolvedValue(false);
   await installSecrets('/out');
   expect(fs.copy).not.toHaveBeenCalled();
+});
+
+test('hiddenPrompt masks password', async () => {
+  const readline = require('node:readline');
+  const mockWrite = jest.fn();
+  const rl = {
+    question: (q, cb) => {
+      rl._writeToOutput('a');
+      cb('secret');
+    },
+    close: jest.fn(),
+    output: { write: mockWrite },
+  };
+  jest.spyOn(readline, 'createInterface').mockReturnValue(rl);
+  const answer = await hiddenPrompt('pw: ');
+  expect(answer).toBe('secret');
+  expect(mockWrite).toHaveBeenCalledWith('*');
 });

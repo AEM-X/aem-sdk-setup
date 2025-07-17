@@ -71,8 +71,8 @@
   "oclif": {
     "bin": "aem-sdk-setup",
     "commands": {
-      "strategy": "single",
-      "target": "./src/commands/setup.js"
+      "strategy": "pattern",
+      "target": "./src/commands"
     },
     "dirname": "aem-sdk-setup",
     "topicSeparator": " ",
