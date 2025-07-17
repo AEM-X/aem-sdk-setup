@@ -19,3 +19,9 @@ test('skips copying when no secretsdir', async () => {
   await installSecrets('/out');
   expect(fs.copy).not.toHaveBeenCalled();
 });
+
+test('supports default output directory', async () => {
+  fs.pathExists.mockResolvedValue(false);
+  await installSecrets();
+  expect(fs.ensureDir).toHaveBeenCalledTimes(2);
+});

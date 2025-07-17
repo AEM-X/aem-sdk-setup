@@ -82,3 +82,21 @@ test('skips src copy when not provided', async () => {
   await installDispatcher('extracted', 'aem-sdk-dispatcher-tools-', '/out');
   expect(fs.copy).not.toHaveBeenCalled();
 });
+
+test('uses bash on windows', async () => {
+  glob.sync
+    .mockReturnValueOnce(['install.sh'])
+    .mockReturnValueOnce(['/tmp/dispatcher-sdk-test']);
+  child_process.spawn.mockReturnValue({
+    on: (event, cb) => event === 'close' && cb(0),
+  });
+  const orig = process.platform;
+  Object.defineProperty(process, 'platform', { value: 'win32' });
+  await installDispatcher('extracted', 'aem-sdk-dispatcher-tools-', '/out');
+  expect(child_process.spawn).toHaveBeenCalledWith(
+    'bash',
+    ['install.sh'],
+    expect.objectContaining({ cwd: 'extracted', stdio: 'inherit' }),
+  );
+  Object.defineProperty(process, 'platform', { value: orig });
+});

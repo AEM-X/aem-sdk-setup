@@ -86,6 +86,29 @@ describe('setup command', () => {
     await expect(Setup.run([], ROOT_OPTS)).rejects.toThrow('AEM Forms addons');
   });
 
+  test('continues when forms zip missing and user agrees', async () => {
+    glob.sync
+      .mockReturnValueOnce(['aem-sdk.zip'])
+      .mockReturnValueOnce(['quickstart.jar'])
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce([]);
+    fs.pathExists.mockResolvedValue(true);
+    fs.ensureDir.mockResolvedValue();
+    fs.copy.mockResolvedValue();
+    const readline = require('node:readline/promises');
+    jest.spyOn(readline, 'createInterface').mockReturnValue({
+      question: jest
+        .fn()
+        .mockResolvedValueOnce('no') // full install
+        .mockResolvedValueOnce('yes') // forms
+        .mockResolvedValueOnce('no') // secrets
+        .mockResolvedValueOnce('no') // dispatcher
+        .mockResolvedValue('yes'), // continue on missing forms
+      close: jest.fn(),
+    });
+    await Setup.run([], ROOT_OPTS);
+  });
+
   test('fails when quickstart jar missing', async () => {
     glob.sync.mockReturnValueOnce(['aem-sdk.zip']).mockReturnValueOnce([]);
     fs.pathExists.mockResolvedValue(true);
@@ -139,6 +162,31 @@ describe('setup command', () => {
     await expect(Setup.run([], ROOT_OPTS)).rejects.toThrow('fail');
   });
 
+  test('continues when secrets install fails and user agrees', async () => {
+    glob.sync
+      .mockReturnValueOnce(['aem-sdk.zip'])
+      .mockReturnValueOnce(['quickstart.jar'])
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce(['aem-forms-addon.zip']);
+    fs.pathExists.mockResolvedValue(true);
+    fs.ensureDir.mockResolvedValue();
+    fs.copy.mockResolvedValue();
+    const readline = require('node:readline/promises');
+    jest.spyOn(readline, 'createInterface').mockReturnValue({
+      question: jest
+        .fn()
+        .mockResolvedValueOnce('no') // full install
+        .mockResolvedValueOnce('no') // forms
+        .mockResolvedValueOnce('yes') // secrets
+        .mockResolvedValueOnce('no') // dispatcher
+        .mockResolvedValue('yes'), // continue on failure
+      close: jest.fn(),
+    });
+    const { installSecrets } = require('../src/lib/secrets');
+    installSecrets.mockRejectedValue('bad');
+    await Setup.run([], ROOT_OPTS);
+  });
+
   test('handles install folder files', async () => {
     glob.sync
       .mockReturnValueOnce(['aem-sdk.zip'])
@@ -179,6 +227,31 @@ describe('setup command', () => {
     const { installDispatcher } = require('../src/lib/dispatcher');
     installDispatcher.mockRejectedValue(new Error('dispfail'));
     await expect(Setup.run([], ROOT_OPTS)).rejects.toThrow('dispfail');
+  });
+
+  test('continues when dispatcher install fails and user agrees', async () => {
+    glob.sync
+      .mockReturnValueOnce(['aem-sdk.zip'])
+      .mockReturnValueOnce(['quickstart.jar'])
+      .mockReturnValueOnce([]);
+    fs.pathExists.mockResolvedValue(true);
+    fs.ensureDir.mockResolvedValue();
+    fs.copy.mockResolvedValue();
+    const readline = require('node:readline/promises');
+    jest.spyOn(readline, 'createInterface').mockReturnValue({
+      question: jest
+        .fn()
+        .mockResolvedValueOnce('no') // full install
+        .mockResolvedValueOnce('no') // forms
+        .mockResolvedValueOnce('no') // secrets
+        .mockResolvedValueOnce('yes') // dispatcher
+        .mockResolvedValueOnce('') // dispatcher src
+        .mockResolvedValue('yes'), // continue on failure
+      close: jest.fn(),
+    });
+    const { installDispatcher } = require('../src/lib/dispatcher');
+    installDispatcher.mockRejectedValue('bad');
+    await Setup.run([], ROOT_OPTS);
   });
 
   test('warns when secrets install fails during full install', async () => {
@@ -243,5 +316,24 @@ describe('setup command', () => {
       close: jest.fn(),
     });
     await Setup.run([], ROOT_OPTS);
+  });
+
+  test('fails when helper scripts cannot be copied', async () => {
+    glob.sync
+      .mockReturnValueOnce(['aem-sdk.zip'])
+      .mockReturnValueOnce(['quickstart.jar'])
+      .mockReturnValueOnce([])
+      .mockReturnValueOnce(['aem-forms-addon.zip']);
+    fs.pathExists.mockResolvedValue(true);
+    fs.ensureDir.mockResolvedValue();
+    fs.copy.mockResolvedValue();
+    const readline = require('node:readline/promises');
+    jest.spyOn(readline, 'createInterface').mockReturnValue({
+      question: jest.fn().mockResolvedValue('yes'),
+      close: jest.fn(),
+    });
+    const { copyStartScripts } = require('../src/lib/scripts');
+    copyStartScripts.mockRejectedValue('boom');
+    await expect(Setup.run([], ROOT_OPTS)).rejects.toThrow('boom');
   });
 });

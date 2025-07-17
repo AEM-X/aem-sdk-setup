@@ -17,3 +17,9 @@ test('skips when scripts missing', async () => {
   await copyStartScripts('/out');
   expect(fs.copy).not.toHaveBeenCalled();
 });
+
+test('supports default output directory', async () => {
+  fs.pathExists.mockResolvedValue(false);
+  await copyStartScripts();
+  expect(fs.copy).not.toHaveBeenCalled();
+});
