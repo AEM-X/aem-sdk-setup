@@ -122,13 +122,12 @@ You can also run `aem-sdk-setup update` to upgrade to the latest release.
 
 ## Publishing
 
-The CLI reads its version from `package.json`. To release a new version:
+Releases are automated using [semantic-release](https://github.com/semantic-release/semantic-release).
+Whenever commits are pushed to `main`, the `Release` workflow creates a new GitHub
+release and publishes the package to npm.
 
-1. Bump the version with `npm version <patch|minor|major>`.
-2. Ensure the `author` field in `package.json` is populated.
-3. Publish the package to npm using `npm publish --access public`.
-
-After publishing, the new version will be shown when running `aem-sdk-setup --version`.
+Ensure a `NPM_TOKEN` secret with publish rights is configured for the repository
+so the workflow can upload the package.
 
 ## Tech Stack
 
