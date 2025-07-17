@@ -44,13 +44,16 @@
   ],
   "dependencies": {
     "@oclif/core": "^4.3.3",
+    "@oclif/plugin-autocomplete": "^3",
     "fs-extra": "^11.3.0",
     "glob": "^11.0.2",
-    "unzipper": "^0.12.3",
-    "@oclif/plugin-autocomplete": "^3",
-    "oclif-plugin-update-notifier": "^1"
+    "unzipper": "^0.12.3"
   },
   "devDependencies": {
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/github": "^11.0.3",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/release-notes-generator": "^14.0.3",
     "@types/jest": "^29.5.14",
     "@types/node": "^24.0.0",
     "eslint": "^9.28.0",
@@ -58,28 +61,34 @@
     "eslint-plugin-prettier": "^5.4.1",
     "jest": "^30.0.0",
     "prettier": "^3.5.3",
-    "ts-node": "^10.9.2",
     "semantic-release": "^24.2.5",
-    "@semantic-release/commit-analyzer": "^13.0.1",
-    "@semantic-release/release-notes-generator": "^14.0.3",
-    "@semantic-release/npm": "^12.0.1",
-    "@semantic-release/github": "^11.0.3"
+    "ts-node": "^10.9.2"
   },
   "bin": {
     "aem-sdk-setup": "./bin/run.js"
   },
   "oclif": {
     "bin": "aem-sdk-setup",
-    "commands": "./src/commands",
+    "commands": {
+      "strategy": "single",
+      "target": "./src/commands/setup.js"
+    },
     "dirname": "aem-sdk-setup",
     "topicSeparator": " ",
     "plugins": [
       "@oclif/plugin-help",
-      "@oclif/plugin-autocomplete",
-      "oclif-plugin-update-notifier"
+      "@oclif/plugin-autocomplete"
     ]
   },
   "engines": {
     "node": ">=18"
+  },
+  "overrides": {
+    "cross-spawn": "^7.0.6",
+    "path-to-regexp": "^1.9.0",
+    "micromatch": "^4.0.8",
+    "braces": "^3.0.3",
+    "brace-expansion": "^2.0.1",
+    "@babel/helpers": "^7.26.10"
   }
 }

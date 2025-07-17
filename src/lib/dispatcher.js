@@ -23,10 +23,10 @@ async function installDispatcher(
   }
   await fs.chmod(path.join(extractedDir, installer), 0o755);
   await new Promise((resolve, reject) => {
-    const child = spawn(`./${installer}`, {
+    const shellCmd = process.platform === 'win32' ? 'bash' : 'sh';
+    const child = spawn(shellCmd, [installer], {
       cwd: extractedDir,
       stdio: 'inherit',
-      shell: true,
     });
     child.on('close', (code) =>
       code === 0
