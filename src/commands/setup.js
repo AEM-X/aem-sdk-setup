@@ -9,6 +9,7 @@ const { installForms } = require('../lib/forms');
 const { installSecrets } = require('../lib/secrets');
 const { installDispatcher } = require('../lib/dispatcher');
 const { copyStartScripts } = require('../lib/scripts');
+const log = require('../utils/log');
 
 /**
  * Root command for setting up an AEM SDK environment.
@@ -230,7 +231,7 @@ module.exports = class Setup extends Command {
       ux.action.start('Copying helper scripts');
       await copyStartScripts(outputDir, authorJar, publishJar);
       ux.action.stop();
-      this.log('AEM setup completed successfully.');
+      this.log(log.info('AEM setup completed successfully.'));
     } catch (error) {
       this.error(error instanceof Error ? error.message : String(error));
     } finally {

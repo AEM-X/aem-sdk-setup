@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const { Command, Args } = require('@oclif/core');
+const log = require('../utils/log');
 
 /**
  * Initialize the default folder structure used by the setup command.
@@ -25,8 +26,8 @@ module.exports = class Init extends Command {
     await fs.ensureDir(installDir);
     await fs.ensureDir(secretsDir);
 
-    this.log(`Created ${inputDir}`);
-    this.log(`Place your AEM SDK files here.`);
-    this.log(`Output will be written to ${outputDir}`);
+    this.log(log.info(`Created ${inputDir}`));
+    this.log(log.info('Place your AEM SDK files here.'));
+    this.log(log.info(`Output will be written to ${outputDir}`));
   }
 };

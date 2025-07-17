@@ -2,9 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const glob = require('glob');
 const { extractZip } = require('./extraction');
-
-const AUTHOR_INSTALL = 'instance/author/crx-quickstart/install';
-const PUBLISH_INSTALL = 'instance/publish/crx-quickstart/install';
+const { AUTHOR_INSTALL, PUBLISH_INSTALL } = require('./constants');
 
 /**
  * Install the AEM Forms add-on from a ZIP file.

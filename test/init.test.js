@@ -19,11 +19,16 @@ test('creates default structure', async () => {
     path.join(process.cwd(), 'setup/input/secretsdir'),
   );
   expect(log).toHaveBeenCalledWith(
-    `Created ${path.join(process.cwd(), 'setup/input')}`,
+    `aem-sdk-setup: [INFO] Created ${path.join(process.cwd(), 'setup/input')}`,
   );
-  expect(log).toHaveBeenCalledWith('Place your AEM SDK files here.');
   expect(log).toHaveBeenCalledWith(
-    `Output will be written to ${path.join(process.cwd(), 'setup/output')}`,
+    'aem-sdk-setup: [INFO] Place your AEM SDK files here.',
+  );
+  expect(log).toHaveBeenCalledWith(
+    `aem-sdk-setup: [INFO] Output will be written to ${path.join(
+      process.cwd(),
+      'setup/output',
+    )}`,
   );
 });
 
@@ -37,6 +42,6 @@ test('accepts custom directory', async () => {
     path.join(process.cwd(), 'custom/input/secretsdir'),
   );
   expect(log).toHaveBeenCalledWith(
-    `Created ${path.join(process.cwd(), 'custom/input')}`,
+    `aem-sdk-setup: [INFO] Created ${path.join(process.cwd(), 'custom/input')}`,
   );
 });

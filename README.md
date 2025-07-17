@@ -1,6 +1,7 @@
 # AEM SDK Setup CLI
 
 [![CI](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/node.yml/badge.svg)](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/node.yml)
+[![npm](https://img.shields.io/npm/v/aem-sdk-setup.svg)](https://www.npmjs.com/package/aem-sdk-setup)
 [![Coverage Status](https://codecov.io/gh/AEM-X/aem-sdk-setup/branch/main/graph/badge.svg)](https://codecov.io/gh/AEM-X/aem-sdk-setup)
 [![CodeQL](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/codeql.yml/badge.svg)](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/codeql.yml)
 [![License Scan](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/license.yml/badge.svg)](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/license.yml)
@@ -97,16 +98,19 @@ aem-sdk-setup --directory /path/to/zips --output ./result
 
 The following commands and options are available:
 
-```bash
-aem-sdk-setup --help, -h               # display usage information
-aem-sdk-setup --version, -v            # display version number only
-aem-sdk-setup -d /path/to/zips         # use files from a different directory
-aem-sdk-setup -o ./result              # write instance to a custom folder
-aem-sdk-setup init                     # create the default folder structure
-aem-sdk-setup autocomplete             # enable shell autocompletion
-aem-sdk-setup commands                 # list all available commands
-aem-sdk-setup update                   # update to the latest version
-```
+| Command                          | Description                          |
+| -------------------------------- | ------------------------------------ |
+| `aem-sdk-setup --help, -h`       | Display usage information            |
+| `aem-sdk-setup --version, -v`    | Display version number only          |
+| `aem-sdk-setup -d /path/to/zips` | Use files from a different directory |
+| `aem-sdk-setup -o ./result`      | Write instance to a custom folder    |
+| `aem-sdk-setup init`             | Create the default folder structure  |
+| `aem-sdk-setup autocomplete`     | Enable shell autocompletion          |
+| `aem-sdk-setup commands`         | List all available commands          |
+| `aem-sdk-setup update`           | Update to the latest version         |
+
+Flags such as `--dry-run` and `--verbose` can be used with most commands for
+additional control.
 
 Running `aem-sdk-setup` without a subcommand automatically executes the setup process.
 
