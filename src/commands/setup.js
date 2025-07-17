@@ -174,7 +174,7 @@ module.exports = class Setup extends Command {
           await installSecrets(outputDir);
           ux.action.stop();
         } catch (error) {
-          ux.action.stop();
+          ux.action.stop('failed');
           const reason = error instanceof Error ? error.message : String(error);
           if (fullInstall) {
             this.warn(`Skipping secrets installation: ${reason}`);
