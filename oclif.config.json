@@ -7,6 +7,13 @@
       "strategy": "pattern",
       "target": "./src/commands"
     },
-    "plugins": ["@oclif/plugin-help", "@oclif/plugin-autocomplete"]
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-autocomplete",
+      "@oclif/plugin-version",
+      "@oclif/plugin-commands",
+      "@oclif/plugin-update",
+      "@oclif/plugin-warn-if-update-available"
+    ]
   }
 }
