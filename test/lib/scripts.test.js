@@ -8,12 +8,13 @@ afterEach(() => jest.resetAllMocks());
 
 test('copies existing scripts', async () => {
   fs.pathExists.mockResolvedValue(true);
-  await copyStartScripts('/out');
+  await copyStartScripts('/out', 'a.jar', 'b.jar');
   expect(fs.copy).toHaveBeenCalledTimes(2);
 });
 
-test('skips when scripts missing', async () => {
+test('creates defaults when scripts missing', async () => {
   fs.pathExists.mockResolvedValue(false);
-  await copyStartScripts('/out');
-  expect(fs.copy).not.toHaveBeenCalled();
+  await copyStartScripts('/out', 'a.jar', 'b.jar');
+  expect(fs.outputFile).toHaveBeenCalledTimes(2);
+  expect(fs.chmod).toHaveBeenCalledTimes(2);
 });
