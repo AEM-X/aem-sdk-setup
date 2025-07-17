@@ -19,3 +19,4 @@ buildNumber.properties
 # Node
 node_modules/
 coverage/
+setup/
