@@ -45,7 +45,7 @@ describe('setup command', () => {
   test('warns when forms zip missing during full install', async () => {
     glob.sync
       .mockReturnValueOnce(['aem-sdk.zip'])
-      .mockReturnValueOnce(['quickstart.jar'])
+      .mockReturnValueOnce(['aem-sdk-quickstart-1.jar'])
       .mockReturnValueOnce([])
       .mockReturnValueOnce([]);
     fs.pathExists.mockResolvedValue(true);
@@ -66,7 +66,7 @@ describe('setup command', () => {
   test('aborts when forms zip missing and user declines', async () => {
     glob.sync
       .mockReturnValueOnce(['aem-sdk.zip'])
-      .mockReturnValueOnce(['quickstart.jar'])
+      .mockReturnValueOnce(['aem-sdk-quickstart-1.jar'])
       .mockReturnValueOnce([])
       .mockReturnValueOnce([]);
     fs.pathExists.mockResolvedValue(true);
@@ -100,7 +100,7 @@ describe('setup command', () => {
   test('runs full install flow', async () => {
     glob.sync
       .mockReturnValueOnce(['aem-sdk.zip']) // sdk
-      .mockReturnValueOnce(['quickstart.jar']) // jar
+      .mockReturnValueOnce(['aem-sdk-quickstart-1.jar']) // jar
       .mockReturnValueOnce([]) // install folder
       .mockReturnValueOnce(['aem-forms-addon.zip']);
     fs.pathExists.mockResolvedValue(true);
@@ -111,14 +111,20 @@ describe('setup command', () => {
       question: jest.fn().mockResolvedValue('yes'),
       close: jest.fn(),
     });
+    const { copyStartScripts } = require('../src/lib/scripts');
     await Setup.run([], ROOT_OPTS);
     expect(fs.remove).toHaveBeenCalledWith(path.join(process.cwd(), 'aem-sdk'));
+    expect(copyStartScripts).toHaveBeenCalledWith(
+      expect.any(String),
+      'aem-author-p4502-1.jar',
+      'aem-publish-p4503-1.jar',
+    );
   });
 
   test('aborts when secrets install fails', async () => {
     glob.sync
       .mockReturnValueOnce(['aem-sdk.zip'])
-      .mockReturnValueOnce(['quickstart.jar'])
+      .mockReturnValueOnce(['aem-sdk-quickstart-1.jar'])
       .mockReturnValueOnce([])
       .mockReturnValueOnce(['aem-forms-addon.zip']);
     fs.pathExists.mockResolvedValue(true);
@@ -142,7 +148,7 @@ describe('setup command', () => {
   test('handles install folder files', async () => {
     glob.sync
       .mockReturnValueOnce(['aem-sdk.zip'])
-      .mockReturnValueOnce(['quickstart.jar'])
+      .mockReturnValueOnce(['aem-sdk-quickstart-1.jar'])
       .mockReturnValueOnce(['extra.zip'])
       .mockReturnValueOnce(['aem-forms-addon.zip']);
     fs.pathExists.mockResolvedValue(true);
@@ -159,7 +165,7 @@ describe('setup command', () => {
   test('aborts when dispatcher install fails', async () => {
     glob.sync
       .mockReturnValueOnce(['aem-sdk.zip'])
-      .mockReturnValueOnce(['quickstart.jar'])
+      .mockReturnValueOnce(['aem-sdk-quickstart-1.jar'])
       .mockReturnValueOnce([]);
     fs.pathExists.mockResolvedValue(true);
     fs.ensureDir.mockResolvedValue();
@@ -184,7 +190,7 @@ describe('setup command', () => {
   test('warns when secrets install fails during full install', async () => {
     glob.sync
       .mockReturnValueOnce(['aem-sdk.zip'])
-      .mockReturnValueOnce(['quickstart.jar'])
+      .mockReturnValueOnce(['aem-sdk-quickstart-1.jar'])
       .mockReturnValueOnce([])
       .mockReturnValueOnce(['aem-forms-addon.zip']);
     fs.pathExists.mockResolvedValue(true);
@@ -207,7 +213,7 @@ describe('setup command', () => {
   test('warns when dispatcher install fails during full install', async () => {
     glob.sync
       .mockReturnValueOnce(['aem-sdk.zip'])
-      .mockReturnValueOnce(['quickstart.jar'])
+      .mockReturnValueOnce(['aem-sdk-quickstart-1.jar'])
       .mockReturnValueOnce([])
       .mockReturnValueOnce(['aem-forms-addon.zip']);
     fs.pathExists.mockResolvedValue(true);
@@ -230,7 +236,7 @@ describe('setup command', () => {
   test('skips optional installs when answered no', async () => {
     glob.sync
       .mockReturnValueOnce(['aem-sdk.zip'])
-      .mockReturnValueOnce(['quickstart.jar'])
+      .mockReturnValueOnce(['aem-sdk-quickstart-1.jar'])
       .mockReturnValueOnce([]);
     fs.pathExists
       .mockResolvedValueOnce(true) // target dir

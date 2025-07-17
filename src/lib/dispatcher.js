@@ -26,7 +26,7 @@ async function installDispatcher(
     const shellCmd = process.platform === 'win32' ? 'bash' : 'sh';
     const child = spawn(shellCmd, [installer], {
       cwd: extractedDir,
-      stdio: 'inherit',
+      stdio: 'ignore',
     });
     child.on('close', (code) =>
       code === 0

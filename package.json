@@ -47,7 +47,8 @@
     "@oclif/plugin-autocomplete": "^3",
     "fs-extra": "^11.3.0",
     "glob": "^11.0.2",
-    "unzipper": "^0.12.3"
+    "unzipper": "^0.12.3",
+    "extract-zip": "^2.0.1"
   },
   "devDependencies": {
     "@semantic-release/commit-analyzer": "^13.0.1",

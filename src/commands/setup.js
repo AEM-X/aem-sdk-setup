@@ -44,6 +44,8 @@ module.exports = class Setup extends Command {
       const DISPATCHER_PREFIX = 'aem-sdk-dispatcher-tools-';
       const AUTHOR_PORT = 4502;
       const PUBLISH_PORT = 4503;
+      let authorJar;
+      let publishJar;
 
       const sdkZip = glob.sync(`${SDK_PREFIX}*.zip`)[0];
       if (!sdkZip) {
@@ -74,19 +76,20 @@ module.exports = class Setup extends Command {
           `Error: Quickstart jar (${jarPattern}) not found in ${extractedDir}`,
         );
       }
+      const version = jar.replace(/^.*quickstart-(.*)\.jar$/, '$1');
+      authorJar = `aem-author-p${AUTHOR_PORT}-${version}.jar`;
+      publishJar = `aem-publish-p${PUBLISH_PORT}-${version}.jar`;
       await fs.copy(
         path.join(extractedDir, jar),
-        path.join(outputDir, `instance/author/aem-author-p${AUTHOR_PORT}.jar`),
+        path.join(outputDir, `instance/author/${authorJar}`),
       );
       await fs.copy(
         path.join(extractedDir, jar),
-        path.join(
-          outputDir,
-          `instance/publish/aem-publish-p${PUBLISH_PORT}.jar`,
-        ),
+        path.join(outputDir, `instance/publish/${publishJar}`),
       );
 
       if (await fs.pathExists('install')) {
+        ux.action.start('Copying install content packages');
         for (const file of glob.sync('*.zip', { cwd: 'install' })) {
           await fs.copy(
             path.join('install', file),
@@ -105,6 +108,7 @@ module.exports = class Setup extends Command {
             ),
           );
         }
+        ux.action.stop();
       }
 
       const rl = readline.createInterface({ input, output });
@@ -224,7 +228,7 @@ module.exports = class Setup extends Command {
       await fs.remove(extractedDir);
 
       ux.action.start('Copying helper scripts');
-      await copyStartScripts(outputDir);
+      await copyStartScripts(outputDir, authorJar, publishJar);
       ux.action.stop();
       this.log('AEM setup completed successfully.');
     } catch (error) {

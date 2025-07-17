@@ -28,7 +28,7 @@ test('runs installer and moves directory', async () => {
   expect(child_process.spawn).toHaveBeenCalledWith(
     process.platform === 'win32' ? 'bash' : 'sh',
     ['install.sh'],
-    expect.objectContaining({ cwd: 'extracted', stdio: 'inherit' }),
+    expect.objectContaining({ cwd: 'extracted', stdio: 'ignore' }),
   );
   expect(fs.chmod).toHaveBeenCalled();
   expect(fs.move).toHaveBeenCalledWith(
