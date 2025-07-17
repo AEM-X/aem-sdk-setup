@@ -45,13 +45,19 @@ node ./bin/run --help
 ## Getting started
 
 Download the AEM as a Cloud Service SDK (also known as the _aem-local-sdk_) from
-the official product downloads page and place the ZIP files in a directory.
-Run the CLI from that location.
+the official product downloads page. Initialise a working directory and
+sub‑folders using the `init` command:
+
+```bash
+aem-sdk-setup init
+```
+
+Place the ZIP files inside `setup/input` and run the CLI from anywhere.
 
 ## Usage
 
-Place the official AEM SDK ZIP files in a directory and run the command from
-that location. At a minimum the CLI expects an archive named
+Place the official AEM SDK ZIP files inside `setup/input` and run the command
+from any directory. At a minimum the CLI expects an archive named
 `aem-sdk-<version>.zip`. The command extracts the archive into a folder next to
 the ZIP and copies the quickstart JARs into the `instance/` structure. If a
 folder named `install/` is present, all ZIP files within are copied to both
@@ -79,9 +85,9 @@ folders `instance/author` and `instance/publish` are created containing the
 quickstart JARs. If `start_author.sh` or `start_publish.sh` exist in the working
 directory they are copied into the respective instance folders for convenience.
 
-If the ZIP files reside elsewhere you can provide the location using the `-d`
-or `--directory` flag. Generated files are placed in an `output/` directory by
-default which can be changed with the `-o`/`--output` flag:
+If you want to use different locations you can override the defaults with the
+`-d`/`--directory` flag and the `-o`/`--output` flag. By default the command
+reads from `setup/input` and writes the instance to `setup/output`:
 
 ```bash
 aem-sdk-setup --directory /path/to/zips --output ./result
@@ -89,13 +95,14 @@ aem-sdk-setup --directory /path/to/zips --output ./result
 
 ## Commands
 
-The CLI exposes a single root command. The following options are available:
+The following commands and options are available:
 
 ```bash
-aem-sdk-setup --help                   # display usage information
+aem-sdk-setup --help, -h               # display usage information
 aem-sdk-setup --version, -v            # display version number only
 aem-sdk-setup -d /path/to/zips         # use files from a different directory
 aem-sdk-setup -o ./result              # write instance to a custom folder
+aem-sdk-setup init                     # create the default folder structure
 aem-sdk-setup autocomplete             # enable shell autocompletion
 ```
 
