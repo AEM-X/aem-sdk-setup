@@ -1,3 +1,7 @@
+/**
+ * Utilities for installing secrets configuration.
+ * @module lib/secrets
+ */
 const fs = require('fs-extra');
 const path = require('path');
 

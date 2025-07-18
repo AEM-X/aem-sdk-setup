@@ -1,3 +1,7 @@
+/**
+ * Utilities for installing the AEM Forms add-on.
+ * @module lib/forms
+ */
 const fs = require('fs-extra');
 const path = require('path');
 const glob = require('glob');
