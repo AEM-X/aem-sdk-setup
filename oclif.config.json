@@ -1,6 +1,6 @@
 {
   "name": "aem-sdk-setup",
-  "version": "1.0.0",
+  "version": "0.0.0-semantic-release",
   "bin": "aem-sdk-setup",
   "oclif": {
     "commands": {
