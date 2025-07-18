@@ -1,3 +1,7 @@
+/**
+ * Archive extraction utilities.
+ * @module lib/extraction
+ */
 const fs = require('fs-extra');
 const unzipper = require('unzipper');
 

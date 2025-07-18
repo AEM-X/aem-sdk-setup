@@ -4,15 +4,18 @@ const glob = require('glob');
 const readline = require('node:readline/promises');
 const { stdin: input, stdout: output } = require('node:process');
 const { Command, Flags, ux } = require('@oclif/core');
+const chalk = require('chalk');
 const { extractZip } = require('../lib/extraction');
 const { installForms } = require('../lib/forms');
 const { installSecrets } = require('../lib/secrets');
 const { installDispatcher } = require('../lib/dispatcher');
 const { copyStartScripts } = require('../lib/scripts');
+const log = require('../utils/log');
 
 /**
  * Root command for setting up an AEM SDK environment.
  * It extracts the SDK archives, installs optional components and copies helper scripts.
+ * @module commands/setup
  */
 module.exports = class Setup extends Command {
   static description = 'Set up AEM SDK environment';
@@ -27,11 +30,26 @@ module.exports = class Setup extends Command {
       description: 'Output directory for the generated instance',
       default: '../output',
     }),
+    verbose: Flags.boolean({
+      char: 'v',
+      description: 'Show additional output',
+      default: false,
+    }),
   };
+  static examples = [
+    'aem-sdk-setup',
+    'aem-sdk-setup --directory ./zips --output ./instance -v',
+  ];
 
+  /**
+   * Execute the setup workflow.
+   * @returns {Promise<void>} resolves when setup completes
+   */
   async run() {
     const { flags } = await this.parse(Setup);
+    const verbose = flags.verbose;
     const targetDir = path.resolve(flags.directory);
+    this.log(chalk.bold('Starting AEM SDK setup'));
     if (!(await fs.pathExists(targetDir))) {
       this.error(`Directory not found: ${targetDir}`);
     }
@@ -39,6 +57,10 @@ module.exports = class Setup extends Command {
     process.chdir(targetDir);
     const outputDir = path.resolve(targetDir, flags.output);
     try {
+      if (verbose) {
+        this.log(log.info(`Using input directory ${targetDir}`));
+        this.log(log.info(`Writing output to ${outputDir}`));
+      }
       const SDK_PREFIX = 'aem-sdk-';
       const FORMS_PREFIX = 'aem-forms-addon-';
       const DISPATCHER_PREFIX = 'aem-sdk-dispatcher-tools-';
@@ -230,7 +252,7 @@ module.exports = class Setup extends Command {
       ux.action.start('Copying helper scripts');
       await copyStartScripts(outputDir, authorJar, publishJar);
       ux.action.stop();
-      this.log('AEM setup completed successfully.');
+      this.log(log.info(chalk.green('AEM setup completed successfully.')));
     } catch (error) {
       this.error(error instanceof Error ? error.message : String(error));
     } finally {

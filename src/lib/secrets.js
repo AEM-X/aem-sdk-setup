@@ -1,10 +1,16 @@
+/**
+ * Utilities for installing secrets configuration.
+ * @module lib/secrets
+ */
 const fs = require('fs-extra');
 const path = require('path');
 
-const AUTHOR_CONF = 'instance/author/crx-quickstart/conf';
-const PUBLISH_CONF = 'instance/publish/crx-quickstart/conf';
-const AUTHOR_SECRETS = 'instance/author/crx-quickstart/secretsdir';
-const PUBLISH_SECRETS = 'instance/publish/crx-quickstart/secretsdir';
+const {
+  AUTHOR_CONF,
+  PUBLISH_CONF,
+  AUTHOR_SECRETS,
+  PUBLISH_SECRETS,
+} = require('./constants');
 
 /**
  * Install secrets configuration and copy secretsdir if present.
@@ -20,8 +26,10 @@ async function installSecrets(outputDir = '.') {
     path.join(outputDir, PUBLISH_CONF, 'sling.properties'),
     'org.apache.felix.configadmin.plugin.interpolation.secretsdir=${sling.home}/secretsdir',
   );
-  if (!(await fs.pathExists('secretsdir')))
+  const secretsDirExists = await fs.pathExists('secretsdir');
+  if (!secretsDirExists) {
     throw new Error('secretsdir directory not found');
+  }
 
   await fs.copy('secretsdir', path.join(outputDir, AUTHOR_SECRETS));
   await fs.copy('secretsdir', path.join(outputDir, PUBLISH_SECRETS));

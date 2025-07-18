@@ -3,15 +3,15 @@ const fs = require('fs-extra');
 
 jest.mock('fs-extra');
 
-const Init = require('../src/commands/init');
+const Init = require('../../src/commands/init');
 
-const ROOT_OPTS = { root: path.join(__dirname, '..') };
+const ROOT_OPTS = { root: path.join(__dirname, '..', '..') };
 
 afterEach(() => jest.resetAllMocks());
 
 test('creates default structure', async () => {
   const log = jest.spyOn(Init.prototype, 'log').mockImplementation();
-  await Init.run([], ROOT_OPTS);
+  await Init.run(['--verbose'], ROOT_OPTS);
   expect(fs.ensureDir).toHaveBeenCalledWith(
     path.join(process.cwd(), 'setup/input/install'),
   );
@@ -19,17 +19,23 @@ test('creates default structure', async () => {
     path.join(process.cwd(), 'setup/input/secretsdir'),
   );
   expect(log).toHaveBeenCalledWith(
-    `Created ${path.join(process.cwd(), 'setup/input')}`,
+    expect.stringContaining(
+      `[INFO] Created ${path.join(process.cwd(), 'setup/input')}`,
+    ),
   );
-  expect(log).toHaveBeenCalledWith('Place your AEM SDK files here.');
   expect(log).toHaveBeenCalledWith(
-    `Output will be written to ${path.join(process.cwd(), 'setup/output')}`,
+    expect.stringContaining('[INFO] Place your AEM SDK files here.'),
+  );
+  expect(log).toHaveBeenCalledWith(
+    expect.stringContaining(
+      `Output will be written to ${path.join(process.cwd(), 'setup/output')}`,
+    ),
   );
 });
 
 test('accepts custom directory', async () => {
   const log = jest.spyOn(Init.prototype, 'log').mockImplementation();
-  await Init.run(['custom'], ROOT_OPTS);
+  await Init.run(['custom', '--verbose'], ROOT_OPTS);
   expect(fs.ensureDir).toHaveBeenCalledWith(
     path.join(process.cwd(), 'custom/input/install'),
   );
@@ -37,6 +43,8 @@ test('accepts custom directory', async () => {
     path.join(process.cwd(), 'custom/input/secretsdir'),
   );
   expect(log).toHaveBeenCalledWith(
-    `Created ${path.join(process.cwd(), 'custom/input')}`,
+    expect.stringContaining(
+      `[INFO] Created ${path.join(process.cwd(), 'custom/input')}`,
+    ),
   );
 });

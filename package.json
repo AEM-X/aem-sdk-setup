@@ -11,7 +11,8 @@
     "format:check": "prettier --check --ignore-path .prettierignore \"**/*.{js,json,md}\"",
     "prepare": "node bin/run --help",
     "prepack": "npm run format",
-    "release": "semantic-release"
+    "release": "semantic-release",
+    "docs": "jsdoc -c jsdoc.config.json"
   },
   "keywords": [
     "aem",
@@ -53,6 +54,7 @@
     "extract-zip": "^2.0.1",
     "fs-extra": "^11.3.0",
     "glob": "^11.0.2",
+    "chalk": "^4.1.2",
     "unzipper": "^0.12.3"
   },
   "devDependencies": {
@@ -67,6 +69,7 @@
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.1",
     "jest": "^30.0.0",
+    "jsdoc": "^4.0.2",
     "prettier": "^3.5.3",
     "semantic-release": "^24.2.5",
     "ts-node": "^10.9.2"

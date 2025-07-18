@@ -1,3 +1,7 @@
+/**
+ * Utilities for installing AEM Dispatcher configuration.
+ * @module lib/dispatcher
+ */
 const fs = require('fs-extra');
 const path = require('path');
 const glob = require('glob');

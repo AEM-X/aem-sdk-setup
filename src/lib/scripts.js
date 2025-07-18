@@ -1,3 +1,7 @@
+/**
+ * Utilities for managing instance start scripts.
+ * @module lib/scripts
+ */
 const fs = require('fs-extra');
 const path = require('path');
 
