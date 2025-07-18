@@ -14,17 +14,15 @@ AEM SDK Setup is a Node.js CLI built with [oclif](https://oclif.io/) that automa
 
 - [Installation](#installation)
 - [Getting started](#getting-started)
+- [Features](#features)
 - [Usage](#usage)
 - [Commands](#commands)
+- [Flags](#flags)
+- [Developer Commands](#developer-commands)
+- [Testing](#testing)
+- [Documentation](#documentation)
+- [Release](#release)
 - [Contribution](#contribution)
-- [Publishing](#publishing)
-- [Tech Stack](#tech-stack)
-- [Package Information](#package-information)
-- [Code Coverage](#code-coverage)
-- [Code Quality](#code-quality)
-- [License Scan](#license-scan)
-- [Security Audit](#security-audit)
-- [Supported Environments](#supported-environments)
 - [License](#license)
 <!-- tocstop -->
 

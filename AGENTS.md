@@ -1,3 +1,31 @@
+# Quick Context for AI Agents
+
+AEM SDK Setup is a Node.js CLI powered by **oclif**. Commands live in
+`src/commands` and delegate most work to modules under `src/lib`. Shared
+utilities such as the logger reside in `src/utils/`, and constants are defined
+in `src/lib/constants.js`. All filesystem operations rely on the async API from
+`fs-extra`.
+
+Tests are located in the `test/` folder and executed with **Jest**. Generate API
+documentation with `npm run docs`, which outputs to `docs/` (ignored by git).
+Continuous integration and releases run via GitHub Actions workflows using
+**semantic-release**.
+
+**Folder overview**
+
+```
+bin/               - CLI entry point
+src/commands/      - command definitions
+src/lib/           - reusable modules
+src/utils/         - shared utilities such as logging
+test/              - jest tests
+```
+
+Always skim `README.md`, `package.json`, and `oclif.config.json` first. If the
+project structure or conventions change, update this file and the generated docs
+so future agents have accurate context. Run `npm test`, `npm run lint`, and
+`npm run docs` before committing.
+
 # Repository Guidelines for Codex Agents
 
 ## Project Structure Rules
