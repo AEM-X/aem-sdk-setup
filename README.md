@@ -7,7 +7,8 @@
 [![License Scan](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/license.yml/badge.svg)](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/license.yml)
 [![Security Audit](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/npm-audit.yml/badge.svg)](https://github.com/AEM-X/aem-sdk-setup/actions/workflows/npm-audit.yml)
 
-This project provides a small command line interface built with [oclif](https://oclif.io/) to automate setting up a local AEM SDK. It is **not** a migration tool but simply a helper utility for extracting the SDK archives and preparing your development environment.
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+AEM SDK Setup is a Node.js CLI built with [oclif](https://oclif.io/) that automates preparing local AEM SDK instances. It extracts the official archives and can set up dispatcher configs, forms add-ons, and secrets. The project uses Jest for testing, JSDoc for documentation, and semantic-release for automated versioning.
 
 <!-- toc -->
 
@@ -32,16 +33,21 @@ This project provides a small command line interface built with [oclif](https://
 Requires Node.js 18 or later.
 
 ```bash
-npm install -g ./
+npm install -g aem-sdk-setup
 ```
 
 Installing globally makes the `aem-sdk-setup` command available in your `PATH`.
 
-From a cloned repository you can invoke the CLI without installing it globally:
+Clone the repository and install dependencies for local development:
 
 ```bash
-node ./bin/run --help
+git clone https://github.com/AEM-X/aem-sdk-setup.git
+cd aem-sdk-setup
+npm install
+npm link
 ```
+
+Now you can run `aem-sdk-setup --help` from anywhere.
 
 ## Getting started
 
@@ -54,6 +60,16 @@ aem-sdk-setup init
 ```
 
 Place the ZIP files inside `setup/input` and run the CLI from anywhere.
+
+## Features
+
+- Extracts AEM SDK archives and copies quickstart JARs
+- Optional Forms add-on installation
+- Secrets folder handling
+- Dispatcher configuration setup
+- Dry-run and JSON output modes
+- Styled progress output
+- Generates API docs with JSDoc
 
 ## Usage
 
@@ -115,78 +131,57 @@ additional control.
 
 Running `aem-sdk-setup` without a subcommand automatically executes the setup process.
 
+## Flags
+
+| Flag        | Description                               |
+| ----------- | ----------------------------------------- |
+| `--dry-run` | Simulate actions without writing files    |
+| `--verbose` | Show detailed logs                        |
+| `--json`    | Output results as JSON                    |
+| `--force`   | Overwrite existing files                  |
+| `--skip-*`  | Skip optional steps like forms or secrets |
+
+## Developer Commands
+
+Run these from the project root:
+
+```bash
+npm run lint
+npm run format
+npm test
+npm run docs
+```
+
 When installed globally the CLI will warn you if a newer version is available.
 You can also run `aem-sdk-setup update` to upgrade to the latest release.
 
-## Contribution
+## Testing
 
-1. Fork the repository and create your branch.
-2. Install dependencies with `npm install`.
-3. Run `npm run format:check` and `npm run lint` before submitting a pull request.
-4. Run `npm test`.
-
-## Publishing
-
-Releases are automated using [semantic-release](https://github.com/semantic-release/semantic-release).
-Whenever commits are pushed to `main`, the `Release` workflow creates a new GitHub
-release and publishes the package to npm.
-
-Ensure a `NPM_TOKEN` secret with publish rights is configured for the repository
-so the workflow can upload the package.
-
-## Tech Stack
-
-- Node.js and [oclif](https://oclif.io/) for the CLI framework
-- `fs-extra`, `glob` and `unzipper` for filesystem and archive operations
-- Jest for unit testing with coverage
-- ESLint and Prettier for code style
-- GitHub Actions for continuous integration with linting, formatting checks, tests and CodeQL analysis
-
-## Package Information
-
-- **Name:** `aem-sdk-setup`
-- **Version:** see [`package.json`](package.json) for the current release
-- **License:** Apache-2.0
-- **Runtime dependencies:** `@oclif/core`, `fs-extra`, `glob`, `unzipper`
-- **Dev dependencies:** `jest`, `eslint`, `prettier`, `@types/node`
-
-## Code Coverage
-
-The `node.yml` workflow runs `npm test -- --coverage --coverageReporters=text --coverageReporters=lcov` on every commit. The coverage
-results are printed in the console and uploaded to Codecov.
-
-To check coverage locally run:
+Run the full test suite with coverage:
 
 ```bash
-npm test -- --coverage --coverageReporters=text --coverageReporters=lcov
+npm test -- --coverage
 ```
 
-The current test suite reports around **97%** statement coverage.
-
-## Code Quality
-
-In addition to coverage reports, the repository runs a scheduled CodeQL scan via
-GitHub Actions to detect common vulnerabilities and ensure code quality.
-
-## License Scan
-
-A dedicated workflow uses `license-checker` to review dependency licenses on
-every push and pull request. The generated report is uploaded as a workflow
-artifact for further inspection.
-
-## Security Audit
-
-An additional job runs `npm audit --audit-level=high` on each commit to detect
-known vulnerabilities in dependencies.
-
-## Supported Environments
-
-- Node.js 18 and later
-- Tested on Linux, macOS and Windows via GitHub Actions
+Tests mock all file and network operations using Jest.
 
 ## Documentation
 
-API documentation is generated with JSDoc and published in the [docs](docs/index.html) directory.
+Generate API reference using JSDoc:
+
+```bash
+npm run docs
+```
+
+Documentation is output to [docs/index.html](docs/index.html).
+
+## Release
+
+This project uses semantic-release to publish new versions and changelogs automatically when commits follow the Conventional Commits spec.
+
+## Contribution
+
+Use semantic commit messages and read [AGENTS.md](AGENTS.md) for full contributor rules.
 
 ## License
 
