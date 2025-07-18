@@ -183,6 +183,10 @@ known vulnerabilities in dependencies.
 - Node.js 18 and later
 - Tested on Linux, macOS and Windows via GitHub Actions
 
+## Documentation
+
+API documentation is generated with JSDoc and published in the [docs](docs/index.html) directory.
+
 ## License
 
 This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.

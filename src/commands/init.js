@@ -5,6 +5,7 @@ const log = require('../utils/log');
 
 /**
  * Initialize the default folder structure used by the setup command.
+ * @module commands/init
  */
 module.exports = class Init extends Command {
   static description = 'Create default setup directory structure';
@@ -15,6 +16,10 @@ module.exports = class Init extends Command {
     }),
   };
 
+  /**
+   * Execute the command.
+   * @returns {Promise<void>} resolves when folders are created
+   */
   async run() {
     const { args } = await this.parse(Init);
     const base = path.resolve(args.directory);

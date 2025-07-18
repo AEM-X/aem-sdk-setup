@@ -14,6 +14,7 @@ const log = require('../utils/log');
 /**
  * Root command for setting up an AEM SDK environment.
  * It extracts the SDK archives, installs optional components and copies helper scripts.
+ * @module commands/setup
  */
 module.exports = class Setup extends Command {
   static description = 'Set up AEM SDK environment';
@@ -30,6 +31,10 @@ module.exports = class Setup extends Command {
     }),
   };
 
+  /**
+   * Execute the setup workflow.
+   * @returns {Promise<void>} resolves when setup completes
+   */
   async run() {
     const { flags } = await this.parse(Setup);
     const targetDir = path.resolve(flags.directory);
