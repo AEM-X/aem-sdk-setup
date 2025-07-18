@@ -3,9 +3,9 @@ const fs = require('fs-extra');
 
 jest.mock('fs-extra');
 
-const Init = require('../src/commands/init');
+const Init = require('../../src/commands/init');
 
-const ROOT_OPTS = { root: path.join(__dirname, '..') };
+const ROOT_OPTS = { root: path.join(__dirname, '..', '..') };
 
 afterEach(() => jest.resetAllMocks());
 

@@ -22,8 +22,10 @@ async function installSecrets(outputDir = '.') {
     path.join(outputDir, PUBLISH_CONF, 'sling.properties'),
     'org.apache.felix.configadmin.plugin.interpolation.secretsdir=${sling.home}/secretsdir',
   );
-  if (!(await fs.pathExists('secretsdir')))
+  const secretsDirExists = await fs.pathExists('secretsdir');
+  if (!secretsDirExists) {
     throw new Error('secretsdir directory not found');
+  }
 
   await fs.copy('secretsdir', path.join(outputDir, AUTHOR_SECRETS));
   await fs.copy('secretsdir', path.join(outputDir, PUBLISH_SECRETS));

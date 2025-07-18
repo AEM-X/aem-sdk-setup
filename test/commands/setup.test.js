@@ -4,25 +4,25 @@ const glob = require('glob');
 
 jest.mock('fs-extra');
 jest.mock('glob');
-jest.mock('../src/lib/extraction', () => ({
+jest.mock('../../src/lib/extraction', () => ({
   extractZip: jest.fn(() => Promise.resolve()),
 }));
-jest.mock('../src/lib/forms', () => ({
+jest.mock('../../src/lib/forms', () => ({
   installForms: jest.fn(() => Promise.resolve()),
 }));
-jest.mock('../src/lib/secrets', () => ({
+jest.mock('../../src/lib/secrets', () => ({
   installSecrets: jest.fn(() => Promise.resolve()),
 }));
-jest.mock('../src/lib/dispatcher', () => ({
+jest.mock('../../src/lib/dispatcher', () => ({
   installDispatcher: jest.fn(() => Promise.resolve()),
 }));
-jest.mock('../src/lib/scripts', () => ({
+jest.mock('../../src/lib/scripts', () => ({
   copyStartScripts: jest.fn(() => Promise.resolve()),
 }));
 
-const Setup = require('../src/commands/setup');
+const Setup = require('../../src/commands/setup');
 
-const ROOT_OPTS = { root: path.join(__dirname, '..') };
+const ROOT_OPTS = { root: path.join(__dirname, '..', '..') };
 
 describe('setup command', () => {
   const fsReal = require('fs');
@@ -116,7 +116,7 @@ describe('setup command', () => {
       question: jest.fn().mockResolvedValue('yes'),
       close: jest.fn(),
     });
-    const { copyStartScripts } = require('../src/lib/scripts');
+    const { copyStartScripts } = require('../../src/lib/scripts');
     await Setup.run([], ROOT_OPTS);
     expect(fs.remove).toHaveBeenCalledWith(
       path.join(path.resolve('setup/input'), 'aem-sdk'),
@@ -147,7 +147,7 @@ describe('setup command', () => {
         .mockResolvedValue('no'),
       close: jest.fn(),
     });
-    const { installSecrets } = require('../src/lib/secrets');
+    const { installSecrets } = require('../../src/lib/secrets');
     installSecrets.mockRejectedValue(new Error('fail'));
     await expect(Setup.run([], ROOT_OPTS)).rejects.toThrow('fail');
   });
@@ -189,7 +189,7 @@ describe('setup command', () => {
         .mockResolvedValue('no'), // continue on failure
       close: jest.fn(),
     });
-    const { installDispatcher } = require('../src/lib/dispatcher');
+    const { installDispatcher } = require('../../src/lib/dispatcher');
     installDispatcher.mockRejectedValue(new Error('dispfail'));
     await expect(Setup.run([], ROOT_OPTS)).rejects.toThrow('dispfail');
   });
@@ -209,7 +209,7 @@ describe('setup command', () => {
       close: jest.fn(),
     });
     const warn = jest.spyOn(Setup.prototype, 'warn');
-    const { installSecrets } = require('../src/lib/secrets');
+    const { installSecrets } = require('../../src/lib/secrets');
     installSecrets.mockRejectedValue(new Error('oops'));
     await Setup.run([], ROOT_OPTS);
     expect(warn).toHaveBeenCalledWith(
@@ -232,7 +232,7 @@ describe('setup command', () => {
       close: jest.fn(),
     });
     const warn = jest.spyOn(Setup.prototype, 'warn');
-    const { installDispatcher } = require('../src/lib/dispatcher');
+    const { installDispatcher } = require('../../src/lib/dispatcher');
     installDispatcher.mockRejectedValue(new Error('oops'));
     await Setup.run([], ROOT_OPTS);
     expect(warn).toHaveBeenCalledWith(

@@ -7,3 +7,7 @@ test('prefixes info messages', () => {
 test('prefixes warnings', () => {
   expect(log.warn('warn')).toBe('aem-sdk-setup: [WARN] warn');
 });
+
+test('prefixes errors', () => {
+  expect(log.error('boom')).toBe('aem-sdk-setup: [ERROR] boom');
+});
