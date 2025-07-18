@@ -257,4 +257,34 @@ describe('setup command', () => {
     });
     await Setup.run([], ROOT_OPTS);
   });
+
+  test('prints verbose details when flag set', async () => {
+    glob.sync
+      .mockReturnValueOnce(['aem-sdk.zip'])
+      .mockReturnValueOnce(['aem-sdk-quickstart-1.jar'])
+      .mockReturnValueOnce([]);
+    fs.pathExists
+      .mockResolvedValueOnce(true) // target dir
+      .mockResolvedValueOnce(false); // install folder
+    fs.ensureDir.mockResolvedValue();
+    fs.copy.mockResolvedValue();
+    jest
+      .spyOn(require('node:readline/promises'), 'createInterface')
+      .mockReturnValue({
+        question: jest.fn().mockResolvedValue('no'),
+        close: jest.fn(),
+      });
+    const log = jest.spyOn(Setup.prototype, 'log').mockImplementation();
+    await Setup.run(['--verbose'], ROOT_OPTS);
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining(
+        `Using input directory ${path.resolve('setup/input')}`,
+      ),
+    );
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining(
+        `Writing output to ${path.resolve('setup/input', '../output')}`,
+      ),
+    );
+  });
 });

@@ -10,8 +10,16 @@
  * @param {string} msg message to display
  * @returns {string} formatted log message
  */
+const chalk = require('chalk');
+
 function format(level, msg) {
-  return `aem-sdk-setup: [${level}] ${msg}`;
+  const colors = {
+    INFO: chalk.cyan,
+    WARN: chalk.yellow,
+    ERROR: chalk.red,
+  };
+  const color = colors[level] || ((t) => t);
+  return `aem-sdk-setup: ${color(`[${level}]`)} ${msg}`;
 }
 
 /** Logging helpers used by commands. */

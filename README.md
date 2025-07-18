@@ -104,6 +104,7 @@ The following commands and options are available:
 | `aem-sdk-setup --version, -v`    | Display version number only          |
 | `aem-sdk-setup -d /path/to/zips` | Use files from a different directory |
 | `aem-sdk-setup -o ./result`      | Write instance to a custom folder    |
+| `aem-sdk-setup --verbose`        | Show detailed progress output        |
 | `aem-sdk-setup init`             | Create the default folder structure  |
 | `aem-sdk-setup autocomplete`     | Enable shell autocompletion          |
 | `aem-sdk-setup commands`         | List all available commands          |

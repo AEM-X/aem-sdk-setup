@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
-const { Command, Args } = require('@oclif/core');
+const { Command, Args, Flags } = require('@oclif/core');
+const chalk = require('chalk');
 const log = require('../utils/log');
 
 /**
@@ -9,6 +10,14 @@ const log = require('../utils/log');
  */
 module.exports = class Init extends Command {
   static description = 'Create default setup directory structure';
+  static flags = {
+    verbose: Flags.boolean({
+      char: 'v',
+      description: 'Show additional output',
+      default: false,
+    }),
+  };
+  static examples = ['aem-sdk-setup init', 'aem-sdk-setup init custom'];
   static args = {
     directory: Args.string({
       description: 'Directory to create the setup structure in',
@@ -21,7 +30,8 @@ module.exports = class Init extends Command {
    * @returns {Promise<void>} resolves when folders are created
    */
   async run() {
-    const { args } = await this.parse(Init);
+    const { args, flags } = await this.parse(Init);
+    const verbose = flags.verbose;
     const base = path.resolve(args.directory);
     const inputDir = path.join(base, 'input');
     const installDir = path.join(inputDir, 'install');
@@ -31,8 +41,12 @@ module.exports = class Init extends Command {
     await fs.ensureDir(installDir);
     await fs.ensureDir(secretsDir);
 
-    this.log(log.info(`Created ${inputDir}`));
-    this.log(log.info('Place your AEM SDK files here.'));
+    if (verbose) {
+      this.log(log.info(`Created ${inputDir}`));
+      this.log(log.info(`Created ${installDir}`));
+      this.log(log.info(`Created ${secretsDir}`));
+    }
+    this.log(log.info(chalk.bold('Place your AEM SDK files here.')));
     this.log(log.info(`Output will be written to ${outputDir}`));
   }
 };
