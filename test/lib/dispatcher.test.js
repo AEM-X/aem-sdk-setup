@@ -12,13 +12,16 @@ const { installDispatcher } = require('../../src/lib/dispatcher');
 afterEach(() => jest.resetAllMocks());
 
 test('runs installer and moves directory', async () => {
+  fs.pathExists
+    .mockResolvedValueOnce(true) // extractedDir check
+    .mockResolvedValueOnce(true); // src path check
   glob.sync
     .mockReturnValueOnce(['install.sh']) // installer
     .mockReturnValueOnce(['/tmp/dispatcher-sdk-test']);
   child_process.spawn.mockReturnValue({
     on: (event, cb) => event === 'close' && cb(0),
   });
-  fs.pathExists.mockResolvedValue(true);
+  fs.ensureDir.mockResolvedValue();
   await installDispatcher(
     'extracted',
     'aem-sdk-dispatcher-tools-',
@@ -43,6 +46,7 @@ test('runs installer and moves directory', async () => {
 });
 
 test('throws when installer missing', async () => {
+  fs.pathExists.mockResolvedValue(true);
   glob.sync.mockReturnValueOnce([]);
   await expect(
     installDispatcher('extracted', 'aem-sdk-dispatcher-tools-'),
@@ -50,6 +54,7 @@ test('throws when installer missing', async () => {
 });
 
 test('throws when dispatcher directory missing', async () => {
+  fs.pathExists.mockResolvedValue(true);
   glob.sync.mockReturnValueOnce(['install.sh']).mockReturnValueOnce([]);
   child_process.spawn.mockReturnValue({
     on: (event, cb) => event === 'close' && cb(0),
@@ -60,6 +65,7 @@ test('throws when dispatcher directory missing', async () => {
 });
 
 test('throws when installer exits non-zero', async () => {
+  fs.pathExists.mockResolvedValue(true);
   glob.sync
     .mockReturnValueOnce(['install.sh'])
     .mockReturnValueOnce(['/tmp/dispatcher-sdk-test']);
@@ -72,13 +78,16 @@ test('throws when installer exits non-zero', async () => {
 });
 
 test('skips src copy when not provided', async () => {
+  fs.pathExists
+    .mockResolvedValueOnce(true) // extractedDir check
+    .mockResolvedValueOnce(false); // src path check
   glob.sync
     .mockReturnValueOnce(['install.sh'])
     .mockReturnValueOnce(['/tmp/dispatcher-sdk-test']);
   child_process.spawn.mockReturnValue({
     on: (event, cb) => event === 'close' && cb(0),
   });
-  fs.pathExists.mockResolvedValue(false);
+  fs.ensureDir.mockResolvedValue();
   await installDispatcher('extracted', 'aem-sdk-dispatcher-tools-', '/out');
   expect(fs.copy).not.toHaveBeenCalled();
 });

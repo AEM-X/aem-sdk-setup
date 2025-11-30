@@ -44,11 +44,25 @@ node ./bin/run --help
 
 ## Getting started
 
-Download the AEM as a Cloud Service SDK (also known as the _aem-local-sdk_) from
-the official product downloads page and place the ZIP files in a directory.
-Run the CLI from that location.
+1. Download the AEM as a Cloud Service SDK (also known as the _aem-local-sdk_) from
+   the [official product downloads page](https://experience.adobe.com/#/downloads/content/software-distribution/en/aemcloud.html).
+2. Place the ZIP files in a directory (or use the `-d` flag to specify a different location).
+3. Run the CLI from that location or specify the directory using command-line flags.
+
+**Required files:**
+
+- `aem-sdk-<version>.zip` - The main AEM SDK archive (required)
+
+**Optional files:**
+
+- `aem-forms-addon-<version>.zip` - AEM Forms add-on (optional)
+- `install/*.zip` - Any ZIP files in an `install/` folder will be copied to both instances
+- `secretsdir/` - Local secrets directory (optional)
+- `start_author.sh` / `start_publish.sh` - Helper start scripts (optional)
 
 ## Usage
+
+### Basic Usage
 
 Place the official AEM SDK ZIP files in a directory and run the command from
 that location. At a minimum the CLI expects an archive named
@@ -57,34 +71,68 @@ the ZIP and copies the quickstart JARs into the `instance/` structure. If a
 folder named `install/` is present, all ZIP files within are copied to both
 author and publish `crx-quickstart/install` directories.
 
-When the CLI runs it prompts for optional installations:
-
-- **AEM Forms add‑on** – requires a file matching
-  `aem-forms-addon-*.zip`. The extracted `.far` archive is copied to both
-  instances.
-- **Secrets** – copies a local `secretsdir/` folder and sets the required sling
-  property files.
-- **AEM Dispatcher tools** – executes the dispatcher installer found in the SDK
-  and moves the generated `dispatcher-sdk-*` folder to `dispatcher/`.
-
 ```bash
 aem-sdk-setup
 ```
 
-Run `aem-sdk-setup --help` at any time to see available options.
+### Interactive Setup
 
 The command walks you through an interactive setup where you choose whether to
-install AEM Forms, secrets or the Dispatcher tools. After extraction two
-folders `instance/author` and `instance/publish` are created containing the
-quickstart JARs. If `start_author.sh` or `start_publish.sh` exist in the working
-directory they are copied into the respective instance folders for convenience.
+install optional components:
 
-If the ZIP files reside elsewhere you can provide the location using the `-d`
+- **Full Installation** – Choose "yes" to install all optional components (Forms, Secrets, Dispatcher)
+- **AEM Forms add‑on** – Requires a file matching `aem-forms-addon-*.zip`. The extracted `.far` archive is copied to both instances.
+- **Secrets** – Copies a local `secretsdir/` folder and sets the required sling property files.
+- **AEM Dispatcher tools** – Executes the dispatcher installer found in the SDK and moves the generated `dispatcher-sdk-*` folder to `dispatcher/`. Optionally, you can provide a path to dispatcher source files.
+
+After extraction, two folders `instance/author` and `instance/publish` are created containing the
+quickstart JARs. If `start_author.sh` or `start_publish.sh` exist in the working
+directory, they are copied into the respective instance folders for convenience.
+
+### Custom Directories
+
+If the ZIP files reside elsewhere, you can provide the location using the `-d`
 or `--directory` flag. Generated files are placed in an `output/` directory by
-default which can be changed with the `-o`/`--output` flag:
+default, which can be changed with the `-o`/`--output` flag:
 
 ```bash
 aem-sdk-setup --directory /path/to/zips --output ./result
+```
+
+### Example Workflow
+
+```bash
+# 1. Download SDK files to a directory
+cd ~/aem-sdk-files
+
+# 2. Run setup (interactive)
+aem-sdk-setup
+
+# 3. Or specify custom paths
+aem-sdk-setup -d ~/downloads/aem -o ~/aem-instances/my-project
+```
+
+### Output Structure
+
+After successful setup, your output directory will contain:
+
+```
+output/
+├── instance/
+│   ├── author/
+│   │   ├── aem-author-p4502.jar
+│   │   ├── crx-quickstart/
+│   │   │   ├── install/          # Packages from install/ folder
+│   │   │   ├── conf/
+│   │   │   │   └── sling.properties  # If secrets installed
+│   │   │   └── secretsdir/       # If secrets installed
+│   │   └── start_author.sh       # If present in working directory
+│   └── publish/
+│       ├── aem-publish-p4503.jar
+│       └── crx-quickstart/
+│           └── ... (same structure as author)
+└── dispatcher/                   # If dispatcher installed
+    └── dispatcher-sdk-*/
 ```
 
 ## Commands
@@ -92,16 +140,63 @@ aem-sdk-setup --directory /path/to/zips --output ./result
 The CLI exposes a single root command. The following options are available:
 
 ```bash
-aem-sdk-setup --help                   # display usage information
-aem-sdk-setup --version, -v            # display version number only
-aem-sdk-setup -d /path/to/zips         # use files from a different directory
-aem-sdk-setup -o ./result              # write instance to a custom folder
-aem-sdk-setup autocomplete             # enable shell autocompletion
+# Display usage information
+aem-sdk-setup --help
+
+# Display version number only
+aem-sdk-setup --version
+aem-sdk-setup -v
+
+# Use files from a different directory
+aem-sdk-setup -d /path/to/zips
+aem-sdk-setup --directory /path/to/zips
+
+# Write instance to a custom folder
+aem-sdk-setup -o ./result
+aem-sdk-setup --output ./result
+
+# Enable shell autocompletion
+aem-sdk-setup autocomplete
 ```
 
 Running `aem-sdk-setup` without a subcommand automatically executes the setup process.
 
-When installed globally the CLI will warn you if a newer version is available.
+When installed globally, the CLI will warn you if a newer version is available.
+
+## Troubleshooting
+
+### Common Issues
+
+**Error: AEM SDK file not found**
+
+- Ensure the SDK ZIP file is named `aem-sdk-<version>.zip`
+- Check that you're running the command from the correct directory, or use `-d` to specify the directory
+
+**Error: Quickstart jar not found**
+
+- The SDK archive may be corrupted or incomplete. Re-download the SDK from Adobe.
+
+**Error: AEM Forms Archive (.far) file not found**
+
+- Ensure the Forms add-on ZIP is properly extracted
+- Verify the Forms ZIP file is not corrupted
+
+**Dispatcher installer fails**
+
+- On Windows, ensure `bash` is available (Git Bash or WSL)
+- Check that the installer script has execute permissions
+- Verify the SDK archive contains the dispatcher tools
+
+**Secrets installation fails**
+
+- Ensure `secretsdir` folder exists in the working directory (or the directory specified with `-d`)
+- Check folder permissions
+
+### Getting Help
+
+- Run `aem-sdk-setup --help` for command-line options
+- Check the [GitHub Issues](https://github.com/AEM-X/aem-sdk-setup/issues) for known problems
+- Review the [Contributing Guide](CONTRIBUTING.md) for development setup
 
 ## Contribution
 
@@ -167,8 +262,13 @@ known vulnerabilities in dependencies.
 
 ## Supported Environments
 
-- Node.js 18 and later
-- Tested on Linux, macOS and Windows via GitHub Actions
+- **Node.js:** 18 and later
+- **Operating Systems:** Linux, macOS, and Windows
+- **Windows Notes:**
+  - Dispatcher installation requires `bash` (Git Bash or WSL recommended)
+  - All other operations work natively on Windows
+
+The project is tested on Linux, macOS, and Windows via GitHub Actions.
 
 ## License
 

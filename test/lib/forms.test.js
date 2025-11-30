@@ -17,8 +17,11 @@ afterEach(() => {
 });
 
 test('installs forms when far exists', async () => {
+  fs.pathExists.mockResolvedValue(true);
   glob.sync.mockReturnValueOnce(['forms.far']);
+  fs.ensureDir.mockResolvedValue();
   await installForms('forms.zip', '/out');
+  expect(fs.pathExists).toHaveBeenCalledWith('forms.zip');
   expect(extractZip).toHaveBeenCalledWith(
     'forms.zip',
     path.join(process.cwd(), 'forms'),
@@ -28,6 +31,9 @@ test('installs forms when far exists', async () => {
 });
 
 test('throws when far missing', async () => {
+  fs.pathExists.mockResolvedValue(true);
   glob.sync.mockReturnValueOnce([]);
+  fs.ensureDir.mockResolvedValue();
+  fs.remove.mockResolvedValue();
   await expect(installForms('forms.zip')).rejects.toThrow('AEM Forms Archive');
 });

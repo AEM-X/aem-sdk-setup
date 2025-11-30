@@ -19,3 +19,6 @@ buildNumber.properties
 # Node
 node_modules/
 coverage/
+
+# IDE
+.idea/

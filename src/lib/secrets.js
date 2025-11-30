@@ -7,7 +7,18 @@ const AUTHOR_SECRETS = 'instance/author/crx-quickstart/secretsdir';
 const PUBLISH_SECRETS = 'instance/publish/crx-quickstart/secretsdir';
 
 /**
- * Install secrets configuration and copy secretsdir if present.
+ * Installs secrets configuration and copies secretsdir if present.
+ *
+ * This function sets up the sling.properties configuration files for both
+ * author and publish instances to enable secrets directory interpolation.
+ * If a local `secretsdir` folder exists in the current working directory,
+ * it is copied to both instance directories.
+ *
+ * @param {string} [outputDir='.'] - Output directory where instances are located
+ * @returns {Promise<void>} Resolves when installation is completed
+ *
+ * @example
+ * await installSecrets('./output');
  */
 async function installSecrets(outputDir = '.') {
   await fs.ensureDir(path.join(outputDir, AUTHOR_CONF));
